@@ -11,31 +11,37 @@
         android:layout_weight="1"></FrameLayout>
 
     <RadioGroup
+        android:id="@+id/rdg_bottom"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:orientation="horizontal">
 
         <RadioButton
+            android:id="@+id/rdo_bottom_home"
             style="@style/bottom_main"
             android:drawableTop="@drawable/tb_home_selector"
             android:text="首页" />
 
         <RadioButton
+            android:id="@+id/rdo_bottom_search"
             style="@style/bottom_main"
             android:drawableTop="@drawable/tb_search_selector"
             android:text="分类" />
 
         <RadioButton
+            android:id="@+id/rdo_bottom_inspiration"
             style="@style/bottom_main"
             android:drawableTop="@drawable/tb_inspiration_selector"
             android:text="灵感" />
 
         <RadioButton
+            android:id="@+id/rdo_bottom_purchase"
             style="@style/bottom_main"
             android:drawableTop="@drawable/tb_purchase_selector"
             android:text="购物袋" />
 
         <RadioButton
+            android:id="@+id/rdo_bottom_me"
             style="@style/bottom_main"
             android:drawableTop="@drawable/tb_me_selector"
             android:text="我的" />
