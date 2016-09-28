@@ -27,4 +27,8 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23.4.0'
     compile project(':okhttputils')
     compile project(':okhttputils')
+//    轮播图
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.android.support:support-v4:23.4.0'
+    compile 'cn.bingoogolapple:bga-banner:2.0.9'
 }
