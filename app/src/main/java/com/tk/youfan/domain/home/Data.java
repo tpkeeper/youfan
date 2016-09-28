@@ -6,7 +6,7 @@ package com.tk.youfan.domain.home;
  * QQ号：1056883354
  * 作用：用于展示在module的每个商品信息
  */
-public class GoodsInfo {
+public class Data {
 
     /**
      * title : 抓绒印花拉链连帽卫衣
@@ -100,5 +100,20 @@ public class GoodsInfo {
 
     public void setProduct_price(double product_price) {
         this.product_price = product_price;
+    }
+
+    @Override
+    public String toString() {
+        return "Data{" +
+                "img='" + img + '\'' +
+                ", title='" + title + '\'' +
+                ", jump_id='" + jump_id + '\'' +
+                ", replace_param='" + replace_param + '\'' +
+                ", sort='" + sort + '\'' +
+                ", module_id='" + module_id + '\'' +
+                ", price_tag='" + price_tag + '\'' +
+                ", product_price=" + product_price +
+                ", jump=" + jump +
+                '}';
     }
 }

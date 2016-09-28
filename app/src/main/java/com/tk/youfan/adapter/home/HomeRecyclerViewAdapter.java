@@ -7,7 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tk.youfan.R;
+import com.tk.youfan.base.BaseHolder;
 import com.tk.youfan.domain.home.Module;
+import com.tk.youfan.utils.LogUtil;
 
 import java.util.List;
 
@@ -17,20 +19,24 @@ import java.util.List;
  * QQ号：1056883354
  * 作用：home的recyclerview的adapter
  */
-public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<BaseHolder> {
     List<Module> moduleList;
     Context mContext;
-    public HomeRecyclerViewAdapter(List<Module> moduleList,Context mContext) {
+
+    public HomeRecyclerViewAdapter(List<Module> moduleList, Context mContext) {
         this.moduleList = moduleList;
+        LogUtil.e(moduleList.get(0).toString());
         this.mContext = mContext;
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = null;
+    public BaseHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(mContext).inflate(R.layout.default_home_module, parent, false);
+        BaseHolder holder = new DefaultHolderHome(view);
         switch (viewType) {
             case 1:
-        view = LayoutInflater.from(mContext).inflate(R.layout.top_img_module,parent,false);
+                view = LayoutInflater.from(mContext).inflate(R.layout.top_img_module, parent, false);
+                holder = new TopImgModuleHolder(mContext, view);
                 break;
             case 2:
 
@@ -87,17 +93,21 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
 
                 break;
         }
-        return new TopImgModuleHolder(view);
+        return holder;
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
+    public void onBindViewHolder(BaseHolder holder, int position) {
+        if (moduleList.get(position) == null) {
+            LogUtil.e("moduleList.get(position)==null");
+            return;
+        }
+        holder.setData(moduleList.get(position).getData());
     }
 
     @Override
     public int getItemCount() {
-        return moduleList.size();
+        return moduleList == null ? 0 : moduleList.size();
     }
 
     @Override

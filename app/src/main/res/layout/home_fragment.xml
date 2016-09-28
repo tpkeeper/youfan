@@ -7,7 +7,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@android:color/holo_blue_light">
+        android:background="#ffffff">
 
         <ImageButton
             android:id="@+id/top_cebian_main"

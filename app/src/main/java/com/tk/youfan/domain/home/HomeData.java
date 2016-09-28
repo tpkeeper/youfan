@@ -93,4 +93,18 @@ public class HomeData {
     public void setModule(List<Module> module) {
         this.module = module;
     }
+
+    @Override
+    public String toString() {
+        return "HomeData{" +
+                "create_time='" + create_time + '\'' +
+                ", id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", title='" + title + '\'' +
+                ", is_delete='" + is_delete + '\'' +
+                ", page='" + page + '\'' +
+                ", module=" + module +
+                ", updateNum=" + updateNum +
+                '}';
+    }
 }

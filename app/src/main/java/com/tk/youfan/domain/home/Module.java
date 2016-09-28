@@ -31,14 +31,14 @@ public class Module {
     private String more_jump_id;
 
     private Jump jump;
-    private List<GoodsInfo> goodsInfoList;
+    private List<Data> data;
 
-    public List<GoodsInfo> getGoodsInfoList() {
-        return goodsInfoList;
+    public List<Data> getData() {
+        return data;
     }
 
-    public void setGoodsInfoList(List<GoodsInfo> goodsInfoList) {
-        this.goodsInfoList = goodsInfoList;
+    public void setData(List<Data> data) {
+        this.data = data;
     }
 
     public Jump getJump() {
@@ -103,5 +103,20 @@ public class Module {
 
     public void setMore_jump_id(String more_jump_id) {
         this.more_jump_id = more_jump_id;
+    }
+
+    @Override
+    public String toString() {
+        return "Module{" +
+                "c_title='" + c_title + '\'' +
+                ", id=" + id +
+                ", e_title='" + e_title + '\'' +
+                ", module_key='" + module_key + '\'' +
+                ", sort='" + sort + '\'' +
+                ", is_more='" + is_more + '\'' +
+                ", more_jump_id='" + more_jump_id + '\'' +
+                ", jump=" + jump +
+                ", data=" + data +
+                '}';
     }
 }

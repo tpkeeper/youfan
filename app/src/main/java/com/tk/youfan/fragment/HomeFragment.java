@@ -1,6 +1,7 @@
 package com.tk.youfan.fragment;
 
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.ImageButton;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.tk.youfan.R;
+import com.tk.youfan.adapter.home.HomeRecyclerViewAdapter;
 import com.tk.youfan.base.BaseFragment;
 import com.tk.youfan.domain.EventMessage;
 import com.tk.youfan.domain.home.HomeData;
@@ -122,7 +124,10 @@ public class HomeFragment extends BaseFragment {
     }
 
     private void initRecycleView() {
-
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
+        HomeRecyclerViewAdapter homeRecyclerViewAdapter = new HomeRecyclerViewAdapter(moduleList, mContext);
+        recyclerviewHome.setAdapter(homeRecyclerViewAdapter);
+        recyclerviewHome.setLayoutManager(linearLayoutManager);
     }
 
 }
