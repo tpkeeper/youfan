@@ -25,27 +25,29 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<BaseHolder> {
 
     public HomeRecyclerViewAdapter(List<Module> moduleList, Context mContext) {
         this.moduleList = moduleList;
-        LogUtil.e(moduleList.get(0).toString());
         this.mContext = mContext;
     }
 
     @Override
     public BaseHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.default_home_module, parent, false);
-        BaseHolder holder = new DefaultHolderHome(view);
+        BaseHolder holder = new DefaultHolderHome(mContext,view);
         switch (viewType) {
             case 1:
                 view = LayoutInflater.from(mContext).inflate(R.layout.top_img_module, parent, false);
                 holder = new TopImgModuleHolder(mContext, view);
                 break;
             case 2:
-
+                view = LayoutInflater.from(mContext).inflate(R.layout.icon_module,parent,false);
+                holder = new IconModuleHolder(mContext,view);
                 break;
             case 3:
-
+                view = LayoutInflater.from(mContext).inflate(R.layout.banner_module,parent,false);
+                holder = new BannerModuleHolder(mContext,view);
                 break;
             case 4:
-
+                view = LayoutInflater.from(mContext).inflate(R.layout.new_module,parent,false);
+                holder = new NewModuleHolder(mContext,view);
                 break;
             case 5:
 
@@ -102,7 +104,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<BaseHolder> {
             LogUtil.e("moduleList.get(position)==null");
             return;
         }
-        holder.setData(moduleList.get(position).getData());
+        holder.setData(moduleList.get(position));
     }
 
     @Override

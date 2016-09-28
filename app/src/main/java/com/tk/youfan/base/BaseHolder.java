@@ -1,9 +1,12 @@
 package com.tk.youfan.base;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.tk.youfan.domain.home.Data;
+import com.tk.youfan.domain.home.Module;
 
 import java.util.List;
 
@@ -14,8 +17,10 @@ import java.util.List;
  * 作用：xxxx
  */
 public abstract class BaseHolder extends RecyclerView.ViewHolder {
-    public BaseHolder(View itemView) {
+   public Context mContext;
+    public BaseHolder(Context mContext, View itemView) {
         super(itemView);
+        this.mContext = mContext;
     }
-    public abstract void setData(List<Data> dataList);
+    public abstract void setData(Module module);
 }

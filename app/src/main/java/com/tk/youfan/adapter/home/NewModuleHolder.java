@@ -1,11 +1,10 @@
 package com.tk.youfan.adapter.home;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -20,19 +19,20 @@ import java.util.List;
 import cn.bingoogolapple.bgabanner.BGABanner;
 
 /**
- * 作者：tpkeeper on 2016/9/28 11:34
+ * 作者：tpkeeper on 2016/9/28 16:55
  * 微信：lzy1056883354
  * QQ号：1056883354
- * 作用：TopImgModule 即顶栏轮播图的holder
+ * 作用：xxxx
  */
-public class TopImgModuleHolder extends BaseHolder {
-
+public class NewModuleHolder extends BaseHolder {
+    TextView c_title;
+    TextView e_title;
     private final BGABanner banner;
-
-
-    public TopImgModuleHolder(Context mContext, View itemView) {
-        super(mContext,itemView);
+    public NewModuleHolder(Context mContext, View itemView) {
+        super(mContext, itemView);
         banner = (BGABanner) itemView.findViewById(R.id.banner_top_home);
+        c_title = (TextView) itemView.findViewById(R.id.c_title);
+        e_title = (TextView) itemView.findViewById(R.id.e_title);
     }
 
     @Override
@@ -40,7 +40,8 @@ public class TopImgModuleHolder extends BaseHolder {
         List<Data> dataList = module.getData();
         List<View> views = new ArrayList<>();
         ImageView imageView;
-
+        c_title.setText(module.getC_title());
+        e_title.setText(module.getE_title());
         for (int i = 0; i < dataList.size(); i++) {
             imageView = new ImageView(mContext);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -54,5 +55,4 @@ public class TopImgModuleHolder extends BaseHolder {
         }
         banner.setData(views);
     }
-
 }

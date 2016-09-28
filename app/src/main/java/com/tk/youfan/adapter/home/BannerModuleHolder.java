@@ -1,9 +1,7 @@
 package com.tk.youfan.adapter.home;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -20,18 +18,16 @@ import java.util.List;
 import cn.bingoogolapple.bgabanner.BGABanner;
 
 /**
- * 作者：tpkeeper on 2016/9/28 11:34
+ * 作者：tpkeeper on 2016/9/28 16:44
  * 微信：lzy1056883354
  * QQ号：1056883354
- * 作用：TopImgModule 即顶栏轮播图的holder
+ * 作用：xxxx
  */
-public class TopImgModuleHolder extends BaseHolder {
-
+public class BannerModuleHolder extends BaseHolder {
     private final BGABanner banner;
 
-
-    public TopImgModuleHolder(Context mContext, View itemView) {
-        super(mContext,itemView);
+    public BannerModuleHolder(Context mContext, View itemView) {
+        super(mContext, itemView);
         banner = (BGABanner) itemView.findViewById(R.id.banner_top_home);
     }
 
