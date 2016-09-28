@@ -1,40 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:orientation="horizontal"
-    android:layout_height="50dp">
-    <TextView
-        android:id="@+id/c_title"
-        android:layout_width="wrap_content"
-        android:text="信任分享"
-        android:layout_marginLeft="5dp"
-        android:layout_gravity="center_vertical"
-        android:textSize="18sp"
-        android:layout_height="wrap_content" />
-    <TextView
-        android:id="@+id/e_title"
-        android:layout_width="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_gravity="center_vertical"
-        android:text="信任分享"
-        android:textSize="18sp"
-        android:layout_height="wrap_content" />
-</LinearLayout>
-    <cn.bingoogolapple.bgabanner.BGABanner
-        android:id="@+id/banner_top_home"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        app:banner_pageChangeDuration="1000"
-        app:banner_pointAutoPlayAble="true"
-        app:banner_pointContainerBackground="@android:color/transparent"
-        app:banner_pointDrawable="@drawable/bga_banner_selector_point_hollow"
-        app:banner_pointTopBottomMargin="15dp"
-        app:banner_transitionEffect="alpha">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    </cn.bingoogolapple.bgabanner.BGABanner>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/c_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dp"
+            android:text="信任分享"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/e_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dp"
+            android:text="信任分享"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+
+        <ImageView
+            android:id="@+id/img_big"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="30dp"
+            android:src="@drawable/slidedot_h" />
+    </RelativeLayout>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/horizontal_scrollview"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+        </LinearLayout>
+    </HorizontalScrollView>
 </LinearLayout>
