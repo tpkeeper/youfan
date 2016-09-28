@@ -42,11 +42,20 @@ public abstract class BaseFragment extends Fragment {
         return view;
     }
 
+
+
     /**
      * 初始化布局
      * @return
      */
     public abstract View initView();
+
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initData();
+    }
 
     /**
      * 初始化数据
