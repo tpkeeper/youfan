@@ -72,13 +72,21 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<BaseHolder> {
                 holder = new ImgModuleHolder(mContext, view);
                 break;
             case TypeConstants.IMG_LIST_V1_MODULE:
-
+                view = LayoutInflater.from(mContext).inflate(R.layout.img_list_v1_module, parent, false);
+                holder = new ImgListV1ModuleHolder(mContext, view);
                 break;
             case TypeConstants.IMG_LIST_V3_MODULE:
-
+                view = LayoutInflater.from(mContext).inflate(R.layout.img_list_v3_module, parent, false);
+                holder = new ImgListV3ModuleHolder(mContext, view);
                 break;
             case TypeConstants.IMG_LIST_V4_MODULE:
-
+                view = LayoutInflater.from(mContext).inflate(R.layout.img_list_v4_module, parent, false);
+                holder = new ImgListV4ModuleHolder(mContext, view);
+                break;
+            case TypeConstants.LIKE_MODULE:
+                view = LayoutInflater.from(mContext).inflate(R.layout.like_module,parent,false);
+                holder = new LikeModuleHolder(mContext,view);
+                break;
         }
         return holder;
     }
@@ -134,6 +142,9 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<BaseHolder> {
                 break;
             case "imgListV4Module":
                 key = TypeConstants.IMG_LIST_V4_MODULE;
+                break;
+            case "likeModule":
+                key = TypeConstants.LIKE_MODULE;
                 break;
         }
         return key;

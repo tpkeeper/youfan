@@ -14,6 +14,7 @@ public class EventMessage {
     public static final String MESSAGE_DATA_EMPTY = "message_data_empty";
     public static final String MESSAGE_OFFLINE = "message_offline";
     public static final String MESSAGE_DATA_GETED_HomeData = "message_data_geted_homedata";
+    public static final String MESSAGE_DATA_GETED_HomeData_LIKE_MODULE ="message_data_geted_homedata_like_module";
 
     public EventMessage(String message) {
         this.message = message;

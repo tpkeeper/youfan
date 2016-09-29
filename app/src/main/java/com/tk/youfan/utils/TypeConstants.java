@@ -20,4 +20,6 @@ public class TypeConstants {
     public static final int IMG_LIST_V3_MODULE = 9;
     public static final int IMG_LIST_V4_MODULE = 10;
     public static final int top_Img_Module = 11;
+    public static final int LIKE_MODULE = 12;
+
 }

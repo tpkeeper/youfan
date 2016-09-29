@@ -1,6 +1,9 @@
 package com.tk.youfan;
 
 import android.app.Application;
+import android.os.Build;
+
+import com.tk.youfan.utils.LogUtil;
 
 /**
  * 作者：tpkeeper on 2016/9/28 09:12
