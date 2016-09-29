@@ -1,6 +1,7 @@
 package com.tk.youfan.adapter.home;
 
 import android.content.Context;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -48,21 +49,26 @@ public class LikeModuleHolder extends BaseHolder {
     TextView c_title;
     TextView e_title;
     MyRecycleView recyclerview_like_module;
+    TextView tv_brand_name;
+    TextView product_name;
+    TextView tv_price;
     private List<LikeModuleProduct> likeModuleProducts;
 
     public LikeModuleHolder(Context mContext, View itemView) {
         super(mContext, itemView);
         c_title = (TextView) itemView.findViewById(R.id.c_title);
         e_title = (TextView) itemView.findViewById(R.id.e_title);
+        tv_brand_name = (TextView) itemView.findViewById(R.id.tv_brand_name);
+        product_name = (TextView) itemView.findViewById(R.id.product_name);
+        tv_price = (TextView) itemView.findViewById(R.id.tv_price);
         recyclerview_like_module = (MyRecycleView) itemView.findViewById(R.id.recyclerview_like_module);
+        EventBus.getDefault().register(this);
     }
 
     @Override
     public void setData(Module module) {
-        List<Data> dataList = module.getData();
         c_title.setText(module.getC_title());
         e_title.setText(module.getE_title());
-
         getDataFromNet();
     }
 
@@ -99,7 +105,6 @@ public class LikeModuleHolder extends BaseHolder {
         JSONObject jsonData = JSON.parseObject(data);
         String list = jsonData.getString("list");
         likeModuleProducts = JSON.parseArray(list, LikeModuleProduct.class);
-        LogUtil.e("tttttttttttttttttttttttttt");
         EventBus.getDefault().post(new EventMessage(EventMessage.MESSAGE_DATA_GETED_HomeData_LIKE_MODULE));
     }
 
@@ -107,18 +112,16 @@ public class LikeModuleHolder extends BaseHolder {
     public void onEventMessage(EventMessage eventMessage) {
         switch (eventMessage.getMessage()) {
             case EventMessage.MESSAGE_DATA_GETED_HomeData_LIKE_MODULE:
-                LogUtil.e("yyyyyyyyyyyyyyyyyyyyy");
                 initRecycleView();
                 break;
         }
     }
 
     private void initRecycleView() {
-        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(mContext,2);
         LikeModuleAdapter likeModuleAdapter = new LikeModuleAdapter();
         recyclerview_like_module.setAdapter(likeModuleAdapter);
-        recyclerview_like_module.setLayoutManager(staggeredGridLayoutManager);
-        LogUtil.e("3333333333333333333"+likeModuleProducts.size());
+        recyclerview_like_module.setLayoutManager(gridLayoutManager);
     }
     class LikeModuleAdapter extends RecyclerView.Adapter<MyHolder>{
 
@@ -141,19 +144,40 @@ public class LikeModuleHolder extends BaseHolder {
     }
 
     class MyHolder extends RecyclerView.ViewHolder{
+
+        TextView tv_brand_name;
+        TextView product_name;
+        TextView tv_price;
         ImageView img_like;
+        ImageView img_tag;
         public MyHolder(View itemView) {
             super(itemView);
             img_like = (ImageView) itemView.findViewById(R.id.img_like);
+            tv_brand_name = (TextView) itemView.findViewById(R.id.tv_brand_name);
+            product_name = (TextView) itemView.findViewById(R.id.product_name);
+            tv_price = (TextView) itemView.findViewById(R.id.tv_price);
+            img_tag = (ImageView) itemView.findViewById(R.id.img_tag);
         }
 
-
-
         public void setData(LikeModuleProduct likeModuleProduct) {
+            if(likeModuleProduct ==null) {
+                LogUtil.e("likemoduleProduct in likeModuleHolder is null !!");
+                return;
+            }
+            tv_brand_name.setText(likeModuleProduct.getBrandName());
+            product_name.setText(likeModuleProduct.getProduct_name());
+            tv_price.setText("￥"+likeModuleProduct.getPrice());
             Glide.with(mContext)
                     .load(likeModuleProduct.getProduct_url())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(img_like);
+            if(likeModuleProduct.getProdClsTag() == null||likeModuleProduct.getProdClsTag().size()==0) {
+                return;
+            }
+            Glide.with(mContext)
+                    .load(likeModuleProduct.getProdClsTag().get(0).getTagUrl())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(img_tag);
         }
     }
 
