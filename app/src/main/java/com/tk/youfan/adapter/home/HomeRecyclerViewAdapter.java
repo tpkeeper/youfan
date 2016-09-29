@@ -149,5 +149,10 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<BaseHolder> {
         }
         return key;
     }
+
+    public void setData(List<Module> moduleList) {
+        this.moduleList = moduleList;
+        notifyDataSetChanged();
+    }
 }
 

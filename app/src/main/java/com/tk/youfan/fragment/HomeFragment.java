@@ -11,6 +11,8 @@ import android.widget.ImageButton;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.cjj.MaterialRefreshLayout;
+import com.cjj.MaterialRefreshListener;
 import com.tk.youfan.R;
 import com.tk.youfan.adapter.home.HomeRecyclerViewAdapter;
 import com.tk.youfan.base.BaseFragment;
@@ -38,7 +40,7 @@ import okhttp3.Response;
  * 作者：tpkeeper on 2016/9/28 00:07
  * 微信：lzy1056883354
  * QQ号：1056883354
- * 作用：xxxx
+ * 作用：主页
  */
 public class HomeFragment extends BaseFragment {
     @Bind(R.id.top_cebian_main)
@@ -47,7 +49,15 @@ public class HomeFragment extends BaseFragment {
     ImageButton topSearchMain;
     @Bind(R.id.recyclerview_home)
     RecyclerView recyclerviewHome;
+    @Bind(R.id.refreshlayout)
+    MaterialRefreshLayout refreshlayout;
     private List<Module> moduleList;
+    private String url;
+    private HomeRecyclerViewAdapter homeRecyclerViewAdapter;
+
+    private static final int REFRESH = 1;
+    private static final int NORMAL = 0;
+    private int state = NORMAL;
 
     @Override
     public View initView() {
@@ -60,7 +70,9 @@ public class HomeFragment extends BaseFragment {
     @Override
     public void initData() {
         super.initData();
+        url = UrlContants.HOME_MEN;
         getDataFromNet();
+        initRefresh();
     }
 
     /**
@@ -68,7 +80,7 @@ public class HomeFragment extends BaseFragment {
      */
     private void getDataFromNet() {
         OkHttpUtils.get()
-                .url(UrlContants.HOME_MEN)
+                .url(url)
                 .id(100)
                 .build()
                 .execute(new MyStringCallBack());
@@ -118,14 +130,37 @@ public class HomeFragment extends BaseFragment {
     public void onEventMessage(EventMessage eventMessage) {
         switch (eventMessage.getMessage()) {
             case EventMessage.MESSAGE_DATA_GETED_HomeData:
-                initRecycleView();
+                //判断是刷新还是第一次进入
+                switch (state) {
+                    case NORMAL:
+                        initRecycleView();
+                        state = REFRESH;
+                        break;
+                    case REFRESH:
+                        homeRecyclerViewAdapter.setData(moduleList);
+                        refreshlayout.finishRefresh();
+                        break;
+                }
                 break;
         }
     }
 
+    private void initRefresh() {
+        refreshlayout.setMaterialRefreshListener(new MaterialRefreshListener() {
+            @Override
+            public void onRefresh(MaterialRefreshLayout materialRefreshLayout) {
+                getDataFromNet();
+            }
+
+            @Override
+            public void onRefreshLoadMore(MaterialRefreshLayout materialRefreshLayout) {
+            }
+        });
+    }
+
     private void initRecycleView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
-        HomeRecyclerViewAdapter homeRecyclerViewAdapter = new HomeRecyclerViewAdapter(moduleList, mContext);
+        homeRecyclerViewAdapter = new HomeRecyclerViewAdapter(moduleList, mContext);
         recyclerviewHome.setAdapter(homeRecyclerViewAdapter);
         recyclerviewHome.setLayoutManager(linearLayoutManager);
     }
