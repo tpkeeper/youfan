@@ -18,4 +18,9 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <style name="pop_home">
+        <item name="android:windowEnterAnimation">@anim/popwindow_home_enter_anim</item>
+        <item name="android:windowExitAnimation">@anim/popwindow_home_exit_anim</item>
+    </style>
+
 </resources>

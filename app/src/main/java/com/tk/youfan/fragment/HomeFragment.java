@@ -1,13 +1,19 @@
 package com.tk.youfan.fragment;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -21,20 +27,20 @@ import com.tk.youfan.domain.home.HomeData;
 import com.tk.youfan.domain.home.Module;
 import com.tk.youfan.utils.LogUtil;
 import com.tk.youfan.utils.UrlContants;
+import com.tk.youfan.view.MyPopupWindow;
 import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.Callback;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
-import okhttp3.Response;
 
 /**
  * 作者：tpkeeper on 2016/9/28 00:07
@@ -43,6 +49,7 @@ import okhttp3.Response;
  * 作用：主页
  */
 public class HomeFragment extends BaseFragment {
+    private static final String URL = "url";
     @Bind(R.id.top_cebian_main)
     ImageButton topCebianMain;
     @Bind(R.id.top_search_main)
@@ -51,6 +58,10 @@ public class HomeFragment extends BaseFragment {
     RecyclerView recyclerviewHome;
     @Bind(R.id.refreshlayout)
     MaterialRefreshLayout refreshlayout;
+    @Bind(R.id.tv_men_women)
+    TextView tv_men_women;
+    @Bind(R.id.rla_title)
+    RelativeLayout rla_title;
     private List<Module> moduleList;
     private String url;
     private HomeRecyclerViewAdapter homeRecyclerViewAdapter;
@@ -68,11 +79,22 @@ public class HomeFragment extends BaseFragment {
     }
 
     @Override
-    public void initData() {
-        super.initData();
-        url = UrlContants.HOME_MEN;
+    public void initData(Bundle savedInstanceState) {
+        super.initData(savedInstanceState);
+        if (savedInstanceState != null && TextUtils.isEmpty(savedInstanceState.getString(URL))) {
+            //恢复页面
+            url = savedInstanceState.getString(URL);
+        } else {
+            //默认加载男生
+            url = UrlContants.HOME_MEN;
+        }
+        initListener();
         getDataFromNet();
         initRefresh();
+    }
+
+    private void initListener() {
+        tv_men_women.setOnClickListener(new MyOnClickListener());
     }
 
     /**
@@ -90,6 +112,7 @@ public class HomeFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+        EventBus.getDefault().unregister(this);
     }
 
     @OnClick({R.id.top_cebian_main, R.id.top_search_main})
@@ -134,11 +157,12 @@ public class HomeFragment extends BaseFragment {
                 switch (state) {
                     case NORMAL:
                         initRecycleView();
-                        state = REFRESH;
                         break;
                     case REFRESH:
                         homeRecyclerViewAdapter.setData(moduleList);
                         refreshlayout.finishRefresh();
+                        //还原状态
+                        state = NORMAL;
                         break;
                 }
                 break;
@@ -149,6 +173,8 @@ public class HomeFragment extends BaseFragment {
         refreshlayout.setMaterialRefreshListener(new MaterialRefreshListener() {
             @Override
             public void onRefresh(MaterialRefreshLayout materialRefreshLayout) {
+                //设置状态
+                state = REFRESH;
                 getDataFromNet();
             }
 
@@ -165,4 +191,53 @@ public class HomeFragment extends BaseFragment {
         recyclerviewHome.setLayoutManager(linearLayoutManager);
     }
 
+    /**
+     * popwindow
+     */
+    private class MyOnClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+
+            tv_men_women.setSelected(!tv_men_women.isSelected());
+
+            final MyPopupWindow myPopupWindow = new MyPopupWindow(mContext);
+            myPopupWindow.setOnItemClickListener(new MyPopupWindow.OnItemClickListener() {
+
+                @Override
+                public void onClick(View view, int index) {
+                    switch (index) {
+                        case 0://男生
+                            url = UrlContants.HOME_MEN;
+                            tv_men_women.setText("男生");
+                            break;
+                        case 1://女生
+                            url = UrlContants.HOME_WOMEN;
+                            tv_men_women.setText("女生");
+                            break;
+                        case 2://生活
+                            url = UrlContants.HOME_LIFE;
+                            tv_men_women.setText("生活");
+                            break;
+                    }
+                    getDataFromNet();
+                    myPopupWindow.dismiss();
+                }
+            });
+            myPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                @Override
+                public void onDismiss() {
+//                    消失的时候要改变一下状态
+                    tv_men_women.setSelected(false);
+                }
+            });
+
+            myPopupWindow.showAsDropDown(rla_title);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(URL, url);
+    }
 }

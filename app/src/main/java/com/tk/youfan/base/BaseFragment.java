@@ -54,13 +54,13 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initData();
+        initData(savedInstanceState);
     }
 
     /**
-     * 初始化数据
+     * 初始化数据,Bundle savedInstanceState用于恢复数据
      */
-    public void initData(){
+    public void initData(Bundle savedInstanceState){
 
     }
 
