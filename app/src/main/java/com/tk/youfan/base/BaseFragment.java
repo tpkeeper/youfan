@@ -70,4 +70,11 @@ public abstract class BaseFragment extends Fragment {
         //保存隐藏状态
         outState.putBoolean(STATE_IS_HIDDEN, isHidden());
     }
+
+    /**
+     * 用于刷新呢数据
+     */
+    public void getDataFromNet(){
+
+    }
 }

@@ -26,6 +26,7 @@ import com.tk.youfan.domain.EventMessage;
 import com.tk.youfan.domain.home.HomeData;
 import com.tk.youfan.domain.home.Module;
 import com.tk.youfan.utils.LogUtil;
+import com.tk.youfan.utils.SPUtils;
 import com.tk.youfan.utils.UrlContants;
 import com.tk.youfan.view.MyPopupWindow;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -50,6 +51,7 @@ import okhttp3.Call;
  */
 public class HomeFragment extends BaseFragment {
     private static final String URL = "url";
+    public static final String SPNAME = "homeurl";
     @Bind(R.id.top_cebian_main)
     ImageButton topCebianMain;
     @Bind(R.id.top_search_main)
@@ -69,6 +71,7 @@ public class HomeFragment extends BaseFragment {
     private static final int REFRESH = 1;
     private static final int NORMAL = 0;
     private int state = NORMAL;
+    private SPUtils spUtils;
 
     @Override
     public View initView() {
@@ -80,13 +83,29 @@ public class HomeFragment extends BaseFragment {
 
     @Override
     public void initData(Bundle savedInstanceState) {
+        spUtils = new SPUtils(mContext,SPNAME);
         super.initData(savedInstanceState);
-        if (savedInstanceState != null && TextUtils.isEmpty(savedInstanceState.getString(URL))) {
-            //恢复页面
-            url = savedInstanceState.getString(URL);
+        if (!TextUtils.isEmpty(spUtils.getString(URL))) {
+            //恢复页面url
+            url = spUtils.getString(URL);
+            //恢复title
+            String title = "男生";
+            switch (url) {
+                case UrlContants.HOME_MEN :
+                        title = "男生";
+                    break;
+                case UrlContants.HOME_WOMEN:
+                    title = "女生";
+                    break;
+                case UrlContants.HOME_LIFE:
+                    title = "生活";
+                    break;
+            }
+            tv_men_women.setText(title);
         } else {
             //默认加载男生
             url = UrlContants.HOME_MEN;
+            spUtils.putString(URL,url);
         }
         initListener();
         getDataFromNet();
@@ -98,9 +117,9 @@ public class HomeFragment extends BaseFragment {
     }
 
     /**
-     * 从网络获取数据
+     * 从网络获取数据,也用于刷新数据
      */
-    private void getDataFromNet() {
+    public void getDataFromNet() {
         OkHttpUtils.get()
                 .url(url)
                 .id(100)
@@ -219,6 +238,8 @@ public class HomeFragment extends BaseFragment {
                             tv_men_women.setText("生活");
                             break;
                     }
+                    //存储url
+                    spUtils.putString(URL,url);
                     getDataFromNet();
                     myPopupWindow.dismiss();
                 }
@@ -238,6 +259,5 @@ public class HomeFragment extends BaseFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(URL, url);
     }
 }

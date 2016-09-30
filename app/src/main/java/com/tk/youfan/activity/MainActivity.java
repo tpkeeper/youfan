@@ -8,6 +8,7 @@ import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
@@ -43,6 +44,9 @@ public class MainActivity extends SlidingFragmentActivity {
 
     private String nowTag;
     private String preTag;
+    private TextView tv_man_left;
+    private TextView tv_women_left;
+    private TextView tv_life_left;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -101,7 +105,12 @@ public class MainActivity extends SlidingFragmentActivity {
         slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
         int screenWidth = ScreenUtils.getScreenWidth(this);
         //设置主页宽度
-        slidingMenu.setBehindOffset((int) (screenWidth * 0.625));
+        slidingMenu.setBehindOffset((int) (screenWidth * 0.425));
+
+//        左侧菜单
+        tv_man_left = (TextView) findViewById(R.id.tv_man_left);
+        tv_women_left = (TextView) findViewById(R.id.tv_women_left);
+        tv_life_left = (TextView) findViewById(R.id.tv_life_left);
     }
 
     private void initListener() {
@@ -111,6 +120,30 @@ public class MainActivity extends SlidingFragmentActivity {
             rdgBottom.check(R.id.rdo_bottom_home);
         }
         //否则为内存恢复启动，由后台切换到前台仍然显示这个页面，不需要check
+
+        //左侧菜单的点击事件
+        initLeftMenuListener();
+    }
+
+    private void initLeftMenuListener() {
+        tv_man_left.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        tv_women_left.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        tv_life_left.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     private class MyOnCheckedChangeListener implements RadioGroup.OnCheckedChangeListener {
