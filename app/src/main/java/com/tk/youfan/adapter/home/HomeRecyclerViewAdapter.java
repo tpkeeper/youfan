@@ -87,6 +87,10 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<BaseHolder> {
                 view = LayoutInflater.from(mContext).inflate(R.layout.like_module,parent,false);
                 holder = new LikeModuleHolder(mContext,view);
                 break;
+            case TypeConstants.NOTICE_MODULE:
+                view = LayoutInflater.from(mContext).inflate(R.layout.notice_module, parent, false);
+                holder = new NoticeModuleHolder(mContext, view);
+                break;
         }
         return holder;
     }
@@ -108,6 +112,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<BaseHolder> {
     @Override
     public int getItemViewType(int position) {
         String module_key = moduleList.get(position).getModule_key();
+        //付给默认值防止数据变动
         int key = TypeConstants.NO;
         switch (module_key) {
             case "topImgModule":
@@ -146,6 +151,8 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<BaseHolder> {
             case "likeModule":
                 key = TypeConstants.LIKE_MODULE;
                 break;
+            case "noticeModule":
+                key = TypeConstants.NOTICE_MODULE;
         }
         return key;
     }

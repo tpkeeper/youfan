@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+<View
+    android:layout_width="8dp"
+    android:layout_gravity="center_vertical"
+    android:background="#FFC407"
+    android:layout_height="25dp"></View>
+    <TextView
+        android:layout_width="100dp"
+        android:text="有范公告"
+        android:textSize="23sp"
+        android:textStyle="italic|bold"
+        android:layout_margin="3dp"
+        android:layout_gravity="center_vertical"
+        android:layout_height="wrap_content" />
+    <com.tk.youfan.view.TextSwitcherView
+        android:id="@+id/text_switcher"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="5dp"
+        android:layout_height="wrap_content">
+    </com.tk.youfan.view.TextSwitcherView>
+</LinearLayout>

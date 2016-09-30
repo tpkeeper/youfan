@@ -22,4 +22,5 @@ public class TypeConstants {
     public static final int top_Img_Module = 11;
     public static final int LIKE_MODULE = 12;
 
+    public static final int NOTICE_MODULE = 13;
 }
