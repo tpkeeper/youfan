@@ -27,12 +27,12 @@ public class UrlContants {
     //分类热门生活
     public static final String KIND_LIFE = "http://api.funwear.com/mbfun_server/index.php?m=Home&a=getAppHotLayout&osCode=android&cid=4&osVersion=19&deviceId=00000000-3723-aff8-ffff-ffff9e701acc&token=&source=android&version=v4.2.2&osName=VPhone&appName=youfanguanfang";
     //分类品类生活
-    public static final String KIND_PINLEI_LIFE = "http://api.funwear.com/mbfun_server/index.php?m=Category&a=getCategoryList&cid=4&osCode=android&osVersion=19&deviceId=00000000-3723-aff8-ffff-ffff9e701acc&token=&source=android&version=v4.2.2&osName=VPhone&appName=youfanguanfang";
+    public static final String KIND_PINLEI_LIFE = "http://api.funwear.com/mbfun_server/index.php?m=CategoryFragment&a=getCategoryList&cid=4&osCode=android&osVersion=19&deviceId=00000000-3723-aff8-ffff-ffff9e701acc&token=&source=android&version=v4.2.2&osName=VPhone&appName=youfanguanfang";
     //分类品牌生活
     public static final String KIND_PINPAI_LIFE = "http://api.funwear.com/mbfun_server/index.php?m=BrandMb&a=getAppBrandList&osCode=android&cid=4&pageIndex=0&osVersion=19&deviceId=00000000-3723-aff8-ffff-ffff9e701acc&token=&source=android&version=v4.2.2&osName=VPhone&pageSize=45&appName=youfanguanfang";
 
     //    分类品类
-    public static final String KIND_PINLEI = "http://api.funwear.com/mbfun_server/index.php?m=Category&a=getCategoryList&cid=1&osCode=android&osVersion=19&deviceId=ffffffff-a66b-bc18-95f9-8e737e716946&token=&source=android&version=v4.2.2&osName=SM-G3818&appName=youfanguanfang";
+    public static final String KIND_PINLEI = "http://api.funwear.com/mbfun_server/index.php?m=CategoryFragment&a=getCategoryList&cid=1&osCode=android&osVersion=19&deviceId=ffffffff-a66b-bc18-95f9-8e737e716946&token=&source=android&version=v4.2.2&osName=SM-G3818&appName=youfanguanfang";
 
     //分类品牌
     public static final String KIND_PINPAI = "http://api.funwear.com/mbfun_server/index.php?m=BrandMb&a=getAppBrandList&osVersion=22&pageIndex=0&appName=youfanguanfang&pageSize=45&cid=1";
@@ -41,7 +41,7 @@ public class UrlContants {
     //热门
     public static final String KIND_HOTCATE_WOMAN = "http://api.funwear.com/mbfun_server/index.php?m=Home&a=getAppHotLayout&osVersion=23&appName=youfanguanfang&source=android&osName=SM-C7000&version=v4.2.2&deviceId=00000000-692b-6411-ffff-ffffc905313a&cid=2&token=80454872de770ff363de91ef688ab634&osCode=android";
     //品类
-    public static final String KIND_SORTS_WOMAN = "http://api.funwear.com/mbfun_server/index.php?m=Category&a=getCategoryList&cid=2&osVersion=23&appName=youfanguanfang&source=android&osName=SM-C7000&version=v4.2.2&deviceId=00000000-692b-6411-ffff-ffffc905313a&token=80454872de770ff363de91ef688ab634&osCode=android";
+    public static final String KIND_SORTS_WOMAN = "http://api.funwear.com/mbfun_server/index.php?m=CategoryFragment&a=getCategoryList&cid=2&osVersion=23&appName=youfanguanfang&source=android&osName=SM-C7000&version=v4.2.2&deviceId=00000000-692b-6411-ffff-ffffc905313a&token=80454872de770ff363de91ef688ab634&osCode=android";
     //品牌
     public static final String KIND_BRAND_WOMAN = "http://api.funwear.com/mbfun_server/index.php?m=BrandMb&a=getAppBrandList&osVersion=23&pageIndex=0&appName=youfanguanfang&pageSize=45&source=android&osName=SM-C7000&version=v4.2.2&deviceId=00000000-692b-6411-ffff-ffffc905313a&cid=2&token=80454872de770ff363de91ef688ab634&osCode=android";
 

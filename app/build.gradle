@@ -33,4 +33,5 @@ dependencies {
     compile 'cn.bingoogolapple:bga-banner:2.0.9'
     compile files('libs/glide-3.6.1.jar')
     compile project(':MaterialRefreshLayout_library')
+    compile project(':SmartTabLayout_library')
 }
