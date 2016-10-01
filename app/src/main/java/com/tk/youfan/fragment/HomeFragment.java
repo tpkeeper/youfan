@@ -30,6 +30,7 @@ import com.tk.youfan.utils.Constants;
 import com.tk.youfan.utils.LogUtil;
 import com.tk.youfan.utils.SPUtils;
 import com.tk.youfan.utils.UrlContants;
+import com.tk.youfan.view.DividerItemDecoration;
 import com.tk.youfan.view.MyPopupWindow;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -218,6 +219,7 @@ public class HomeFragment extends BaseFragment {
         homeRecyclerViewAdapter = new HomeRecyclerViewAdapter(moduleList, mContext);
         recyclerviewHome.setAdapter(homeRecyclerViewAdapter);
         recyclerviewHome.setLayoutManager(linearLayoutManager);
+        recyclerviewHome.addItemDecoration(new DividerItemDecoration(mContext,DividerItemDecoration.VERTICAL_LIST));
     }
 
     /**
