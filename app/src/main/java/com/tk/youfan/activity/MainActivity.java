@@ -19,7 +19,10 @@ import com.tk.youfan.fragment.InspirationFragment;
 import com.tk.youfan.fragment.MeFragment;
 import com.tk.youfan.fragment.PurchaseFragment;
 import com.tk.youfan.fragment.SearchFragment;
+import com.tk.youfan.utils.Constants;
+import com.tk.youfan.utils.SPUtils;
 import com.tk.youfan.utils.ScreenUtils;
+import com.tk.youfan.utils.UrlContants;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -47,6 +50,9 @@ public class MainActivity extends SlidingFragmentActivity {
     private TextView tv_man_left;
     private TextView tv_women_left;
     private TextView tv_life_left;
+    private SPUtils spUtils;
+    public  SlidingMenu slidingMenu;
+    private HomeFragment homeFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,7 +71,7 @@ public class MainActivity extends SlidingFragmentActivity {
 
     private void initFragments(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
-            HomeFragment homeFragment = new HomeFragment();
+            homeFragment = new HomeFragment();
             SearchFragment searchFragment = new SearchFragment();
             InspirationFragment inspirationFragment = new InspirationFragment();
             PurchaseFragment purchaseFragment = new PurchaseFragment();
@@ -98,7 +104,7 @@ public class MainActivity extends SlidingFragmentActivity {
         ButterKnife.bind(this);
         //左侧菜单
         setBehindContentView(R.layout.left_menu);
-        SlidingMenu slidingMenu = getSlidingMenu();
+        slidingMenu = getSlidingMenu();
         //左侧模式
         slidingMenu.setMode(SlidingMenu.LEFT);
         //边缘滑动
@@ -126,22 +132,59 @@ public class MainActivity extends SlidingFragmentActivity {
     }
 
     private void initLeftMenuListener() {
+        spUtils = new SPUtils(this, Constants.HOME_SP_NAME);
         tv_man_left.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                spUtils.putString(Constants.HOME_URL, UrlContants.HOME_MEN);
+                slidingMenu.toggle();
+                //刷新
+                //当fragment重新创建时，homeFragment 指向的引用已经不存在，造成空指针
+                //homeFragment.refreshlayout.autoRefresh();
+
+                //解决,重新找到真实引用
+                BaseFragment homeFragment = (BaseFragment) MainActivity.this.getSupportFragmentManager().findFragmentByTag(HomeFragment.class.getSimpleName());
+                BaseFragment searchFragment = (BaseFragment) MainActivity.this.getSupportFragmentManager().findFragmentByTag(SearchFragment.class.getSimpleName());
+                if(!homeFragment.isHidden()) {
+                    homeFragment.getDataFromNet();
+                }
+                if(!searchFragment.isHidden()) {
+                    searchFragment.getDataFromNet();
+                }
 
             }
         });
         tv_women_left.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                spUtils.putString(Constants.HOME_URL, UrlContants.HOME_WOMEN);
+                slidingMenu.toggle();
+                //刷新
+                BaseFragment homeFragment = (BaseFragment) MainActivity.this.getSupportFragmentManager().findFragmentByTag(HomeFragment.class.getSimpleName());
+                BaseFragment searchFragment = (BaseFragment) MainActivity.this.getSupportFragmentManager().findFragmentByTag(SearchFragment.class.getSimpleName());
+                if(!homeFragment.isHidden()) {
+                    homeFragment.getDataFromNet();
+                }
+                if(!searchFragment.isHidden()) {
+                    searchFragment.getDataFromNet();
+                }
             }
         });
         tv_life_left.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                spUtils.putString(Constants.HOME_URL, UrlContants.HOME_LIFE);
+                slidingMenu.toggle();
+                //刷新
+//                homeFragment.refreshlayout.autoRefresh();
+                BaseFragment homeFragment = (BaseFragment) MainActivity.this.getSupportFragmentManager().findFragmentByTag(HomeFragment.class.getSimpleName());
+                BaseFragment searchFragment = (BaseFragment) MainActivity.this.getSupportFragmentManager().findFragmentByTag(SearchFragment.class.getSimpleName());
+                if(!homeFragment.isHidden()) {
+                    homeFragment.getDataFromNet();
+                }
+                if(!searchFragment.isHidden()) {
+                    searchFragment.getDataFromNet();
+                }
             }
         });
     }

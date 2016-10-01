@@ -9,7 +9,9 @@ import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 import android.os.Handler;
+
 import com.tk.youfan.R;
+import com.tk.youfan.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -27,6 +29,7 @@ public class TextSwitcherView extends TextSwitcher implements ViewSwitcher.ViewF
     private final int UPDATE_TEXTSWITCHER = 1;
     private int timerStartAgainCount = 0;
     private Context mContext;
+
     public TextSwitcherView(Context context) {
 
         super(context);
@@ -34,6 +37,7 @@ public class TextSwitcherView extends TextSwitcher implements ViewSwitcher.ViewF
         mContext = context;
         init();
     }
+
     public TextSwitcherView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
@@ -41,14 +45,15 @@ public class TextSwitcherView extends TextSwitcher implements ViewSwitcher.ViewF
         // TODO Auto-generated constructor stub
     }
 
-    private void init(){
+    private void init() {
         this.setFactory(this);
         this.setInAnimation(getContext(), R.anim.vertical_in);
         this.setOutAnimation(getContext(), R.anim.vertical_out);
         Timer timer = new Timer();
-        timer.schedule(timerTask, 1,2000);
+        timer.schedule(timerTask, 1, 2000);
     }
-    TimerTask timerTask =  new TimerTask() {
+
+    TimerTask timerTask = new TimerTask() {
 
         @Override
         public void run() {   //不能在这里创建任何UI的更新，toast也不行
@@ -58,7 +63,7 @@ public class TextSwitcherView extends TextSwitcher implements ViewSwitcher.ViewF
             handler.sendMessage(msg);
         }
     };
-    Handler handler = new Handler(){
+    Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case UPDATE_TEXTSWITCHER:
@@ -69,24 +74,34 @@ public class TextSwitcherView extends TextSwitcher implements ViewSwitcher.ViewF
                     break;
             }
 
-        };
+        }
+
+        ;
     };
+
     /**
      * 需要传递的资源
+     *
      * @param reArrayList
      */
     public void setArrayList(ArrayList<String> reArrayList) {
         this.reArrayList = reArrayList;
     }
+
     public void updateTextSwitcher() {
-        if (this.reArrayList != null && this.reArrayList.size()>0) {
-            this.setText(this.reArrayList.get(resIndex++));
-            if (resIndex > this.reArrayList.size()-1) {
-                resIndex = 0;
+        if (this.reArrayList != null && this.reArrayList.size() > 0) {
+            if (reArrayList.size() > resIndex) {//防止越界
+                this.setText(this.reArrayList.get(resIndex++));
+                if (resIndex > this.reArrayList.size() - 1) {
+                    resIndex = 0;
+                }
+            }else {
+                LogUtil.e("textswitch rearraylist out of index!!!");
             }
         }
 
     }
+
     @Override
     public View makeView() {
         // TODO Auto-generated method stub

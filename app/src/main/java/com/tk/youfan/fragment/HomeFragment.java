@@ -20,11 +20,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.cjj.MaterialRefreshLayout;
 import com.cjj.MaterialRefreshListener;
 import com.tk.youfan.R;
+import com.tk.youfan.activity.MainActivity;
 import com.tk.youfan.adapter.home.HomeRecyclerViewAdapter;
 import com.tk.youfan.base.BaseFragment;
 import com.tk.youfan.domain.EventMessage;
 import com.tk.youfan.domain.home.HomeData;
 import com.tk.youfan.domain.home.Module;
+import com.tk.youfan.utils.Constants;
 import com.tk.youfan.utils.LogUtil;
 import com.tk.youfan.utils.SPUtils;
 import com.tk.youfan.utils.UrlContants;
@@ -50,8 +52,7 @@ import okhttp3.Call;
  * 作用：主页
  */
 public class HomeFragment extends BaseFragment {
-    private static final String URL = "url";
-    public static final String SPNAME = "homeurl";
+//    public static final String URL = "url";
     @Bind(R.id.top_cebian_main)
     ImageButton topCebianMain;
     @Bind(R.id.top_search_main)
@@ -59,7 +60,7 @@ public class HomeFragment extends BaseFragment {
     @Bind(R.id.recyclerview_home)
     RecyclerView recyclerviewHome;
     @Bind(R.id.refreshlayout)
-    MaterialRefreshLayout refreshlayout;
+    public MaterialRefreshLayout refreshlayout;
     @Bind(R.id.tv_men_women)
     TextView tv_men_women;
     @Bind(R.id.rla_title)
@@ -83,16 +84,37 @@ public class HomeFragment extends BaseFragment {
 
     @Override
     public void initData(Bundle savedInstanceState) {
-        spUtils = new SPUtils(mContext,SPNAME);
+        spUtils = new SPUtils(mContext, Constants.HOME_SP_NAME);
         super.initData(savedInstanceState);
-        if (!TextUtils.isEmpty(spUtils.getString(URL))) {
+
+        initListener();
+        getDataFromNet();
+        initRefresh();
+    }
+
+    private void initListener() {
+        tv_men_women.setOnClickListener(new MyOnClickListener());
+        topCebianMain.setOnClickListener(new MyCeBianClickListener());
+    }
+    private class MyCeBianClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            ((MainActivity)getActivity()).slidingMenu.toggle();
+        }
+    }
+
+    /**
+     * 从网络获取数据,也用于刷新数据，初始化，刷新都会走此方法
+     */
+    public void getDataFromNet() {
+        if (!TextUtils.isEmpty(spUtils.getString(Constants.HOME_URL))) {
             //恢复页面url
-            url = spUtils.getString(URL);
+            url = spUtils.getString(Constants.HOME_URL);
             //恢复title
             String title = "男生";
             switch (url) {
                 case UrlContants.HOME_MEN :
-                        title = "男生";
+                    title = "男生";
                     break;
                 case UrlContants.HOME_WOMEN:
                     title = "女生";
@@ -105,21 +127,9 @@ public class HomeFragment extends BaseFragment {
         } else {
             //默认加载男生
             url = UrlContants.HOME_MEN;
-            spUtils.putString(URL,url);
+            spUtils.putString(Constants.HOME_URL,url);
         }
-        initListener();
-        getDataFromNet();
-        initRefresh();
-    }
 
-    private void initListener() {
-        tv_men_women.setOnClickListener(new MyOnClickListener());
-    }
-
-    /**
-     * 从网络获取数据,也用于刷新数据
-     */
-    public void getDataFromNet() {
         OkHttpUtils.get()
                 .url(url)
                 .id(100)
@@ -227,20 +237,18 @@ public class HomeFragment extends BaseFragment {
                     switch (index) {
                         case 0://男生
                             url = UrlContants.HOME_MEN;
-                            tv_men_women.setText("男生");
                             break;
                         case 1://女生
                             url = UrlContants.HOME_WOMEN;
-                            tv_men_women.setText("女生");
                             break;
                         case 2://生活
                             url = UrlContants.HOME_LIFE;
-                            tv_men_women.setText("生活");
                             break;
                     }
                     //存储url
-                    spUtils.putString(URL,url);
-                    getDataFromNet();
+                    spUtils.putString(Constants.HOME_URL,url);
+                    //自动刷新
+                    refreshlayout.autoRefresh();
                     myPopupWindow.dismiss();
                 }
             });
@@ -260,4 +268,6 @@ public class HomeFragment extends BaseFragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
     }
+
+
 }
