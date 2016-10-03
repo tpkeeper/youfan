@@ -53,7 +53,7 @@ import okhttp3.Call;
  * 作用：主页
  */
 public class HomeFragment extends BaseFragment {
-//    public static final String URL = "url";
+    //    public static final String URL = "url";
     @Bind(R.id.top_cebian_main)
     ImageButton topCebianMain;
     @Bind(R.id.top_search_main)
@@ -74,6 +74,7 @@ public class HomeFragment extends BaseFragment {
     private static final int NORMAL = 0;
     private int state = NORMAL;
     private SPUtils spUtils;
+    private int urlType;
 
     @Override
     public View initView() {
@@ -85,7 +86,7 @@ public class HomeFragment extends BaseFragment {
 
     @Override
     public void initData(Bundle savedInstanceState) {
-        spUtils = new SPUtils(mContext, Constants.HOME_SP_NAME);
+        spUtils = new SPUtils(mContext, Constants.SP_NAME);
         super.initData(savedInstanceState);
 
         initListener();
@@ -95,40 +96,38 @@ public class HomeFragment extends BaseFragment {
 
     private void initListener() {
         tv_men_women.setOnClickListener(new MyOnClickListener());
-        topCebianMain.setOnClickListener(new MyCeBianClickListener());
+//        topCebianMain.setOnClickListener(new MyCeBianClickListener());
     }
-    private class MyCeBianClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            ((MainActivity)getActivity()).slidingMenu.toggle();
-        }
-    }
+
 
     /**
      * 从网络获取数据,也用于刷新数据，初始化，刷新都会走此方法
      */
     public void getDataFromNet() {
-        if (!TextUtils.isEmpty(spUtils.getString(Constants.HOME_URL))) {
+        if (spUtils.getInt(Constants.GENDER, Constants.URL_TYPE_NO) != Constants.URL_TYPE_NO){
             //恢复页面url
-            url = spUtils.getString(Constants.HOME_URL);
+            urlType = spUtils.getInt(Constants.GENDER,Constants.URL_TYPE_NO);
             //恢复title
             String title = "男生";
-            switch (url) {
-                case UrlContants.HOME_MEN :
+            switch (urlType) {
+                case Constants.URL_TYPE_MAN:
                     title = "男生";
+                    url = UrlContants.HOME_MEN;
                     break;
-                case UrlContants.HOME_WOMEN:
+                case Constants.URL_TYPE_WOMAN:
                     title = "女生";
+                    url = UrlContants.HOME_WOMEN;
                     break;
-                case UrlContants.HOME_LIFE:
+                case Constants.URL_TYPE_LIFE:
                     title = "生活";
+                    url = UrlContants.HOME_LIFE;
                     break;
             }
             tv_men_women.setText(title);
-        } else {
+        }else{
             //默认加载男生
             url = UrlContants.HOME_MEN;
-            spUtils.putString(Constants.HOME_URL,url);
+            spUtils.putInt(Constants.GENDER, Constants.URL_TYPE_MAN);
         }
 
         OkHttpUtils.get()
@@ -145,12 +144,15 @@ public class HomeFragment extends BaseFragment {
         EventBus.getDefault().unregister(this);
     }
 
-    @OnClick({R.id.top_cebian_main, R.id.top_search_main})
+    @OnClick({R.id.top_cebian_main, R.id.top_search_main,R.id.tv_men_women})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.top_cebian_main:
+                ((MainActivity) getActivity()).slidingMenu.toggle();
                 break;
             case R.id.top_search_main:
+                break;
+            case R.id.tv_men_women:
                 break;
         }
     }
@@ -178,6 +180,14 @@ public class HomeFragment extends BaseFragment {
         moduleList = homeData.getModule();
         EventBus.getDefault().post(new EventMessage(EventMessage.MESSAGE_DATA_GETED_HomeData));
     }
+
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        if(spUtils.getInt(Constants.GENDER,Constants.URL_TYPE_NO)!=urlType) {
+//            refreshlayout.autoRefresh();
+//        }
+//    }
 
     @Subscribe
     public void onEventMessage(EventMessage eventMessage) {
@@ -219,7 +229,7 @@ public class HomeFragment extends BaseFragment {
         homeRecyclerViewAdapter = new HomeRecyclerViewAdapter(moduleList, mContext);
         recyclerviewHome.setAdapter(homeRecyclerViewAdapter);
         recyclerviewHome.setLayoutManager(linearLayoutManager);
-        recyclerviewHome.addItemDecoration(new DividerItemDecoration(mContext,DividerItemDecoration.VERTICAL_LIST));
+        recyclerviewHome.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL_LIST));
     }
 
     /**
@@ -248,7 +258,7 @@ public class HomeFragment extends BaseFragment {
                             break;
                     }
                     //存储url
-                    spUtils.putString(Constants.HOME_URL,url);
+                    spUtils.putInt(Constants.GENDER, index);
                     //自动刷新
                     refreshlayout.autoRefresh();
                     myPopupWindow.dismiss();

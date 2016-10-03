@@ -1,5 +1,6 @@
 package com.tk.youfan.fragment;
 
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
@@ -14,8 +15,6 @@ import com.tk.youfan.base.BaseFragment;
 public class InspirationFragment extends BaseFragment {
     @Override
     public View initView() {
-        TextView textView  = new TextView(mContext);
-        textView.setText("inspiration");
-        return textView;
+        return null;
     }
 }

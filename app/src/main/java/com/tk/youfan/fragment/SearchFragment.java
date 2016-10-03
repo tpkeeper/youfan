@@ -72,7 +72,6 @@ public class SearchFragment extends BaseFragment {
         baseFragmentList.add(new TrendFragment());
         viewpager.setAdapter(new MyFragmentPagerAdapter(getFragmentManager()));
         viewpagertab.setViewPager(viewpager);
-        viewpagertab.setOnPageChangeListener(new MyOnPageChangeListener());
     }
 
     /**
@@ -128,19 +127,5 @@ public class SearchFragment extends BaseFragment {
         }
     }
 
-    private class MyOnPageChangeListener implements ViewPager.OnPageChangeListener {
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-
-        }
-    }
 }

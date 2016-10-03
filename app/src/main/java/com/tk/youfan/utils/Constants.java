@@ -7,6 +7,11 @@ package com.tk.youfan.utils;
  * 作用：xxxx
  */
 public class Constants {
-    public static final String HOME_URL = "home_url";
-    public static final String HOME_SP_NAME = "home_sp_name";
+    public static final String SP_NAME = "sp_name";
+    //用于区分男生，女生，生活
+    public static final java.lang.String GENDER = "gender";
+    public static final int URL_TYPE_MAN = 0;
+    public static final int URL_TYPE_WOMAN = 1;
+    public static final int URL_TYPE_LIFE = 2;
+    public static final int URL_TYPE_NO = -1;
 }
