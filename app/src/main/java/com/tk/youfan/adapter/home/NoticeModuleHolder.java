@@ -1,9 +1,13 @@
 package com.tk.youfan.adapter.home;
 
 import android.content.Context;
+import android.content.Intent;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.TextView;
 
 import com.tk.youfan.R;
+import com.tk.youfan.activity.JumpActivity;
 import com.tk.youfan.base.BaseHolder;
 import com.tk.youfan.domain.home.Data;
 import com.tk.youfan.domain.home.Module;
@@ -31,7 +35,7 @@ public class NoticeModuleHolder extends BaseHolder {
             LogUtil.e("noticeModule is null!!");
             return;
         }
-        List<Data> dataList = module.getData();
+        final List<Data> dataList = module.getData();
         ArrayList<String> arrayList = new ArrayList<>();
         for (int i=0;i<dataList.size();i++){
             if(dataList.get(i)==null) {
@@ -40,8 +44,23 @@ public class NoticeModuleHolder extends BaseHolder {
             }
             arrayList.add(dataList.get(i).getTitle());
         }
-
-        List<Data> data = module.getData();
         text_switcher.setArrayList(arrayList);
+
+        text_switcher.setOnTextClickListener(new TextSwitcherView.OnTextClickListener() {
+            @Override
+            public void onTextClick(TextView textView) {
+                for (int i = 0;i<dataList.size();i++){
+                    Data data = dataList.get(i);
+                    String title = data.getTitle();
+                    if(!TextUtils.isEmpty(title)&&title.equals(textView.getText())) {
+                        Intent intent = new Intent(mContext, JumpActivity.class);
+                        intent.putExtra("url", data.getJump().getUrl());
+                        intent.putExtra("title_later",data.getTitle());
+                        intent.putExtra("title",data.getJump().getName());
+                        mContext.startActivity(intent);
+                    }
+                }
+            }
+        });
     }
 }

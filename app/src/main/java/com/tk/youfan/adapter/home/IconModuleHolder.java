@@ -1,6 +1,7 @@
 package com.tk.youfan.adapter.home;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -8,6 +9,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tk.youfan.R;
+import com.tk.youfan.activity.JumpActivity;
 import com.tk.youfan.base.BaseHolder;
 import com.tk.youfan.domain.home.Data;
 import com.tk.youfan.domain.home.Module;
@@ -86,11 +88,22 @@ public class IconModuleHolder extends BaseHolder {
     public void setData(Module module) {
         List<Data> dataList = module.getData();
         for (int i = 0;i<dataList.size();i++){
+            final Data data = dataList.get(i);
             Glide.with(mContext)
-                    .load(dataList.get(i).getImg())
+                    .load(data.getImg())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(imageViews.get(i));
-            textViews.get(i).setText(dataList.get(i).getTitle());
+            textViews.get(i).setText(data.getTitle());
+            imageViews.get(i).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, JumpActivity.class);
+                    intent.putExtra("url",data.getJump().getUrl());
+                    intent.putExtra("title_later",data.getTitle());
+                    intent.putExtra("title",data.getJump().getName());
+                    mContext.startActivity(intent);
+                }
+            });
         }
     }
 }

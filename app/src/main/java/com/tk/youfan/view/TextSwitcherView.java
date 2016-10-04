@@ -51,6 +51,7 @@ public class TextSwitcherView extends TextSwitcher implements ViewSwitcher.ViewF
         this.setOutAnimation(getContext(), R.anim.vertical_out);
         Timer timer = new Timer();
         timer.schedule(timerTask, 1, 2000);
+
     }
 
     TimerTask timerTask = new TimerTask() {
@@ -92,10 +93,11 @@ public class TextSwitcherView extends TextSwitcher implements ViewSwitcher.ViewF
         if (this.reArrayList != null && this.reArrayList.size() > 0) {
             if (reArrayList.size() > resIndex) {//防止越界
                 this.setText(this.reArrayList.get(resIndex++));
+
                 if (resIndex > this.reArrayList.size() - 1) {
                     resIndex = 0;
                 }
-            }else {
+            } else {
                 LogUtil.e("textswitch rearraylist out of index!!!");
             }
         }
@@ -105,9 +107,31 @@ public class TextSwitcherView extends TextSwitcher implements ViewSwitcher.ViewF
     @Override
     public View makeView() {
         // TODO Auto-generated method stub
-        TextView tView = new TextView(getContext());
+        final TextView tView = new TextView(getContext());
         tView.setTextSize(12);
         tView.setTextColor(Color.BLACK);
+        //对textView设置监听事件
+        tView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onTextClickListener != null) {
+                    onTextClickListener.onTextClick(tView);
+
+                }
+            }
+        });
         return tView;
     }
+
+    public interface OnTextClickListener {
+        void onTextClick(TextView textView);
+    }
+
+    private OnTextClickListener onTextClickListener;
+
+    public void setOnTextClickListener(OnTextClickListener onTextClickListener) {
+        this.onTextClickListener = onTextClickListener;
+    }
+
+
 }

@@ -59,6 +59,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<BaseHolder> {
                 holder = new HotCateModuleHolder(mContext, view);
                 break;
             case TypeConstants.HOT_BRAND_MODULE:
+                //no webview
                 view = LayoutInflater.from(mContext).inflate(R.layout.hot_brand_module, parent, false);
                 holder = new HotBrandModule(mContext, view);
                 break;
@@ -76,14 +77,17 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<BaseHolder> {
                 holder = new ImgListV1ModuleHolder(mContext, view);
                 break;
             case TypeConstants.IMG_LIST_V3_MODULE:
+                //only first is webview
                 view = LayoutInflater.from(mContext).inflate(R.layout.img_list_v3_module, parent, false);
                 holder = new ImgListV3ModuleHolder(mContext, view);
                 break;
             case TypeConstants.IMG_LIST_V4_MODULE:
+                // no webView
                 view = LayoutInflater.from(mContext).inflate(R.layout.img_list_v4_module, parent, false);
                 holder = new ImgListV4ModuleHolder(mContext, view);
                 break;
             case TypeConstants.LIKE_MODULE:
+                //goods details view
                 view = LayoutInflater.from(mContext).inflate(R.layout.like_module,parent,false);
                 holder = new LikeModuleHolder(mContext,view);
                 break;
