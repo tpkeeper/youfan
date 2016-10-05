@@ -1,12 +1,14 @@
 package com.tk.youfan.adapter.search;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tk.youfan.R;
+import com.tk.youfan.activity.BrandDetailActivity;
 import com.tk.youfan.base.BaseHolder;
 import com.tk.youfan.domain.home.Module;
 import com.tk.youfan.domain.search.Brand;
@@ -28,11 +30,20 @@ public class BrandViewHolder extends BaseHolder {
     public void setData(Module module) {
     }
 
-    public void setBrandData(Brand brandData){
+    public void setBrandData(final Brand brandData){
         Glide.with(mContext)
                 .load(brandData.getLogo_img())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(img_brand);
+        img_brand.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext,BrandDetailActivity.class);
+                String brand_code = brandData.getBrand_code();
+                intent.putExtra("brand_code",brand_code);
+                mContext.startActivity(intent);
+            }
+        });
     }
 
 }

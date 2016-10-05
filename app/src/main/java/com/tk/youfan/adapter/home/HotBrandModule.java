@@ -1,6 +1,7 @@
 package com.tk.youfan.adapter.home;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tk.youfan.R;
+import com.tk.youfan.activity.BrandDetailActivity;
 import com.tk.youfan.base.BaseHolder;
 import com.tk.youfan.domain.home.Data;
 import com.tk.youfan.domain.home.Module;
@@ -67,10 +69,20 @@ public class HotBrandModule extends BaseHolder {
 
             View view = LayoutInflater.from(mContext).inflate(R.layout.item_home_hotcate_module, parent, false);
             ImageView img_grid = (ImageView) view.findViewById(R.id.img_grid);
+            final Data data = dataList.get(position);
             Glide.with(mContext)
-                    .load(dataList.get(position).getImg())
+                    .load(data.getImg())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(img_grid);
+            img_grid.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext,BrandDetailActivity.class);
+                    String brand_code = data.getJump().getName();
+                    intent.putExtra("brand_code",brand_code);
+                    mContext.startActivity(intent);
+                }
+            });
             return view;
         }
     }
