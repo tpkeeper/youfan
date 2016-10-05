@@ -19,7 +19,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.JumpActivity" />
-        <activity android:name=".activity.BrandDetailActivity"></activity>
+        <activity android:name=".activity.InspiraJumpActivity" />
+        <activity android:name=".activity.BrandDetailActivity" />
+        <activity android:name=".activity.CatagoryDetailActivity"></activity>
     </application>
 
 </manifest>

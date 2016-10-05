@@ -4,6 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <WebView
+        android:id="@+id/webview_jump"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"></WebView>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -31,6 +36,17 @@
             android:textSize="20sp" />
 
         <ImageButton
+            android:id="@+id/imgb_collect"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="60dp"
+            android:background="@android:color/transparent"
+            android:paddingRight="2dp"
+            android:src="@drawable/top_like_selector" />
+
+        <ImageButton
             android:id="@+id/imgb_share_jump"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
@@ -40,9 +56,4 @@
             android:paddingRight="10dp"
             android:src="@drawable/top_share" />
     </RelativeLayout>
-
-    <WebView
-        android:id="@+id/webview_jump"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"></WebView>
 </LinearLayout>

@@ -1,5 +1,6 @@
 package com.tk.youfan.fragment.searchchild;
 
+import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -19,6 +20,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cjj.MaterialRefreshLayout;
 import com.cjj.MaterialRefreshListener;
 import com.tk.youfan.R;
+import com.tk.youfan.activity.CatagoryDetailActivity;
 import com.tk.youfan.base.BaseFragment;
 import com.tk.youfan.domain.EventMessage;
 import com.tk.youfan.domain.home.HomeData;
@@ -77,9 +79,9 @@ public class CategoryFragment extends BaseFragment {
     }
 
     public void getDataFromNet() {
-        if (spUtils.getInt(Constants.GENDER, Constants.URL_TYPE_NO) != Constants.URL_TYPE_NO){
+        if (spUtils.getInt(Constants.GENDER, Constants.URL_TYPE_NO) != Constants.URL_TYPE_NO) {
             //恢复页面url
-            urlType = spUtils.getInt(Constants.GENDER,Constants.URL_TYPE_NO);
+            urlType = spUtils.getInt(Constants.GENDER, Constants.URL_TYPE_NO);
             //恢复title
             url = UrlContants.KIND_PINLEI_MAN;
             switch (urlType) {
@@ -93,7 +95,7 @@ public class CategoryFragment extends BaseFragment {
                     url = UrlContants.KIND_PINLEI_LIFE;
                     break;
             }
-        }else{
+        } else {
             //默认加载男生
             url = UrlContants.KIND_PINLEI_MAN;
             spUtils.putInt(Constants.GENDER, Constants.URL_TYPE_MAN);
@@ -150,6 +152,7 @@ public class CategoryFragment extends BaseFragment {
                 break;
         }
     }
+
     private void initRefresh() {
         refreshLayout.setMaterialRefreshListener(new MaterialRefreshListener() {
             @Override
@@ -164,6 +167,7 @@ public class CategoryFragment extends BaseFragment {
             }
         });
     }
+
     private void initExpandableView() {
         adapter = new MyExpandableListAdapter();
         expandableListview.setAdapter(adapter);
@@ -249,7 +253,19 @@ public class CategoryFragment extends BaseFragment {
                 holder = (ChildHolder) convertView.getTag();
             }
 
-            holder.setData(parentList.get(groupPosition).getSubs().get(childPosition));
+            final Parent parent1 = parentList.get(groupPosition);
+            final Sub sub = parent1.getSubs().get(childPosition);
+            holder.setData(sub);
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, CatagoryDetailActivity.class);
+                    intent.putExtra("brand_url",sub.getImg());
+                    intent.putExtra("brand_code",sub.getId());
+                    intent.putExtra("brand_name",sub.getCate_name());
+                    mContext.startActivity(intent);
+                }
+            });
             return convertView;
         }
 
