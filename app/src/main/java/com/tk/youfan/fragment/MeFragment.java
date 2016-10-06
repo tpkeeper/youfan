@@ -1,8 +1,10 @@
 package com.tk.youfan.fragment;
 
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tk.youfan.R;
 import com.tk.youfan.base.BaseFragment;
 
 /**
@@ -14,8 +16,7 @@ import com.tk.youfan.base.BaseFragment;
 public class MeFragment extends BaseFragment {
     @Override
     public View initView() {
-        TextView textView  = new TextView(mContext);
-        textView.setText("me");
-        return textView;
+        View view = LayoutInflater.from(mContext).inflate(R.layout.me_fragment,null);
+        return view;
     }
 }
