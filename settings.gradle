@@ -1,1 +1,2 @@
 include ':app', ':SlidingMenu_library', ':okhttputils', ':MaterialRefreshLayout_library', ':SmartTabLayout_library'
+include ':speechDemo'

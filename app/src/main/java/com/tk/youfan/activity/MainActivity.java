@@ -1,5 +1,6 @@
 package com.tk.youfan.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -53,6 +54,7 @@ public class MainActivity extends SlidingFragmentActivity {
     private SPUtils spUtils;
     public SlidingMenu slidingMenu;
     private HomeFragment homeFragment;
+    private TextView tv_speach;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -117,6 +119,7 @@ public class MainActivity extends SlidingFragmentActivity {
         tv_man_left = (TextView) findViewById(R.id.tv_man_left);
         tv_women_left = (TextView) findViewById(R.id.tv_women_left);
         tv_life_left = (TextView) findViewById(R.id.tv_life_left);
+        tv_speach = (TextView) findViewById(R.id.tv_speach);
     }
 
     private void initListener() {
@@ -184,6 +187,13 @@ public class MainActivity extends SlidingFragmentActivity {
                 if (!searchFragment.isHidden()) {
                     searchFragment.getDataFromNet();
                 }
+            }
+        });
+        tv_speach.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,SpeachActivity.class);
+                MainActivity.this.startActivity(intent);
             }
         });
     }
