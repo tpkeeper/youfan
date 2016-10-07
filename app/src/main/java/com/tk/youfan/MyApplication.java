@@ -17,6 +17,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        //初始化讯飞语音
         SpeechUtility.createUtility(this, SpeechConstant.APPID + "=57f62703");
     }
 }
