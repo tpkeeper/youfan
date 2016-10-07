@@ -3,6 +3,8 @@ package com.tk.youfan;
 import android.app.Application;
 import android.os.Build;
 
+import com.iflytek.cloud.SpeechConstant;
+import com.iflytek.cloud.SpeechUtility;
 import com.tk.youfan.utils.LogUtil;
 
 /**
@@ -15,5 +17,6 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        SpeechUtility.createUtility(this, SpeechConstant.APPID + "=57f62703");
     }
 }
