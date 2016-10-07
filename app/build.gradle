@@ -34,4 +34,5 @@ dependencies {
     compile files('libs/glide-3.6.1.jar')
     compile project(':MaterialRefreshLayout_library')
     compile project(':SmartTabLayout_library')
+    compile project(':quicksidebar')
 }

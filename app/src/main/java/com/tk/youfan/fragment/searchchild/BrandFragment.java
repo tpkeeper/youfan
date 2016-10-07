@@ -7,7 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
@@ -27,6 +29,7 @@ import com.tk.youfan.utils.LogUtil;
 import com.tk.youfan.utils.SPUtils;
 import com.tk.youfan.utils.UrlContants;
 import com.tk.youfan.view.DividerItemDecoration;
+import com.tk.youfan.view.MyBrandPopupWindow;
 import com.tk.youfan.view.MyPopupWindow;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -58,22 +61,50 @@ public class BrandFragment extends BaseFragment {
     private int state = NORMAL;
     MaterialRefreshLayout refreshlayout;
     private BrandRecyclerViewAdapter brandRecyclerViewAdapter;
-
+    ImageView img_sequence;
+    RelativeLayout rla_content;
     @Override
     public View initView() {
         View view = LayoutInflater.from(mContext).inflate(R.layout.brand_fragment,null);
         refreshlayout = (MaterialRefreshLayout) view.findViewById(R.id.refreshlayout);
+        img_sequence = (ImageView) view.findViewById(R.id.img_sequence);
         EventBus.getDefault().register(this);
         recyclerview_brand = (RecyclerView) view.findViewById(R.id.recyclerview_brand);
+        rla_content = (RelativeLayout) view.findViewById(R.id.rla_content);
         return view;
     }
 
     @Override
     public void initData(Bundle savedInstanceState) {
         super.initData(savedInstanceState);
+        initListener();
         spUtils = new SPUtils(mContext, Constants.SP_NAME);
         getDataFromNet();
     }
+
+    private void initListener() {
+        img_sequence.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MyBrandPopupWindow myBrandPopupWindow = new MyBrandPopupWindow(mContext, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                    }
+                });
+                img_sequence.setVisibility(View.GONE);
+                //设置高度和位置
+                myBrandPopupWindow.setHeight(rla_content.getBottom()-rla_content.getTop());
+                myBrandPopupWindow.showAsDropDown(img_sequence,0,-img_sequence.getBottom());
+                myBrandPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                    @Override
+                    public void onDismiss() {
+                        img_sequence.setVisibility(View.VISIBLE);
+                    }
+                });
+            }
+        });
+    }
+
     /**
      * 从网络获取数据,也用于刷新数据，初始化，刷新都会走此方法
      */

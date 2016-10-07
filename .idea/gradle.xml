@@ -14,7 +14,7 @@
             <option value="$PROJECT_DIR$/SmartTabLayout_library" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/okhttputils" />
-            <option value="$PROJECT_DIR$/speechDemo" />
+            <option value="$PROJECT_DIR$/quicksidebar" />
           </set>
         </option>
         <option name="myModules">
@@ -25,7 +25,7 @@
             <option value="$PROJECT_DIR$/SmartTabLayout_library" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/okhttputils" />
-            <option value="$PROJECT_DIR$/speechDemo" />
+            <option value="$PROJECT_DIR$/quicksidebar" />
           </set>
         </option>
       </GradleProjectSettings>

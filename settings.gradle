@@ -1,2 +1,1 @@
-include ':app', ':SlidingMenu_library', ':okhttputils', ':MaterialRefreshLayout_library', ':SmartTabLayout_library'
-include ':speechDemo'
+include ':app', ':SlidingMenu_library', ':okhttputils', ':MaterialRefreshLayout_library', ':SmartTabLayout_library', ':quicksidebar'
