@@ -3,6 +3,7 @@ package com.tk.youfan.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -55,6 +56,8 @@ public class MainActivity extends SlidingFragmentActivity {
     public SlidingMenu slidingMenu;
     private HomeFragment homeFragment;
     private TextView tv_speach;
+    int preButton = 0;
+    int nowButton = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -178,7 +181,7 @@ public class MainActivity extends SlidingFragmentActivity {
             public void onClick(View v) {
                 spUtils.putInt(Constants.GENDER, Constants.URL_TYPE_LIFE);
                 slidingMenu.toggle();
-                    //刷新
+                //刷新
                 HomeFragment homeFragment = (HomeFragment) MainActivity.this.getSupportFragmentManager().findFragmentByTag(HomeFragment.class.getSimpleName());
                 SearchFragment searchFragment = (SearchFragment) MainActivity.this.getSupportFragmentManager().findFragmentByTag(SearchFragment.class.getSimpleName());
                 if (!homeFragment.isHidden()) {
@@ -192,30 +195,37 @@ public class MainActivity extends SlidingFragmentActivity {
         tv_speach.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,SpeachActivity.class);
+                Intent intent = new Intent(MainActivity.this, SpeachActivity.class);
                 MainActivity.this.startActivity(intent);
             }
         });
     }
 
+
     private class MyOnCheckedChangeListener implements RadioGroup.OnCheckedChangeListener {
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedId) {
             preTag = nowTag;
+            preButton = nowButton;
             switch (checkedId) {
                 case R.id.rdo_bottom_home:
+                    nowButton = 0;
                     nowTag = HomeFragment.class.getSimpleName();
                     break;
                 case R.id.rdo_bottom_search:
+                    nowButton = 1;
                     nowTag = SearchFragment.class.getSimpleName();
                     break;
                 case R.id.rdo_bottom_inspiration:
+                    nowButton = 2;
                     nowTag = InspirationFragment.class.getSimpleName();
                     break;
                 case R.id.rdo_bottom_purchase:
+                    nowButton = 3;
                     nowTag = PurchaseFragment.class.getSimpleName();
                     break;
                 case R.id.rdo_bottom_me:
+                    nowButton = 4;
                     nowTag = MeFragment.class.getSimpleName();
                     break;
             }
@@ -231,8 +241,24 @@ public class MainActivity extends SlidingFragmentActivity {
             Log.i("T", "showFragment ==null or hideFragment ==null");
             return;
         }
-        getSupportFragmentManager()
-                .beginTransaction()
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+
+//                /设置自定义过场动画
+        if (preButton <= nowButton) {
+
+            fragmentTransaction.setCustomAnimations(
+                    R.anim.push_left_in,
+                    R.anim.push_left_out,
+                    R.anim.push_left_in,
+                    R.anim.push_left_out);
+        }else {
+            fragmentTransaction.setCustomAnimations(
+                    R.anim.push_right_in,
+                    R.anim.push_right_out,
+                    R.anim.push_right_in,
+                    R.anim.push_right_out);
+        }
+        fragmentTransaction
                 .hide(hideFragment)
                 .show(showFragment)
                 .commit();
