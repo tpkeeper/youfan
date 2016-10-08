@@ -58,6 +58,8 @@ public class ImgModuleHolder extends BaseHolder {
             Glide.with(mContext)
                     .load(data.getImg())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.drawable.default100)
+                    .error(R.drawable.default100)
                     .into(imageView);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override

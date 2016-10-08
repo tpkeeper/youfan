@@ -46,6 +46,8 @@ public class ImgListV3ModuleHolder extends BaseHolder {
             Glide.with(mContext)
                     .load(data.getImg())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.drawable.default100)
+                    .error(R.drawable.default100)
                     .into(img_little);
             if("1".equals(data.getSort())) {
                 img_little.setOnClickListener(new View.OnClickListener() {

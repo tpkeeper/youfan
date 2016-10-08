@@ -40,7 +40,6 @@
                 <TextView
                     android:id="@+id/tv_show_name"
                     android:layout_width="match_parent"
-                    android:text="xxx"
                     android:textSize="20sp"
                     android:paddingLeft="10dp"
                     android:gravity="center_vertical"
@@ -52,7 +51,6 @@
                     <TextView
                         android:id="@+id/tv_sale_price"
                         android:layout_width="wrap_content"
-                        android:text="xxxxx"
                         android:textSize="30sp"
                         android:gravity="center_vertical"
                         android:layout_marginLeft="10dp"
@@ -60,7 +58,6 @@
                     <TextView
                         android:id="@+id/tv_market_price"
                         android:layout_width="wrap_content"
-                        android:text="xxx"
                         android:textSize="13sp"
                         android:layout_marginLeft="15sp"
                         android:gravity="center_vertical"

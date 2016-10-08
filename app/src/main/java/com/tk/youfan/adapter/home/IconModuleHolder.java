@@ -92,6 +92,8 @@ public class IconModuleHolder extends BaseHolder {
             Glide.with(mContext)
                     .load(data.getImg())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.drawable.default100)
+                    .error(R.drawable.default100)
                     .into(imageViews.get(i));
             textViews.get(i).setText(data.getTitle());
             imageViews.get(i).setOnClickListener(new View.OnClickListener() {

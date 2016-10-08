@@ -53,6 +53,8 @@ public class NewModuleHolder extends BaseHolder {
         Glide.with(mContext)
                 .load(data1.getImg())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.drawable.default100)
+                .error(R.drawable.default100)
                 .into(img_big);
         img_big.setOnClickListener(new View.OnClickListener() {
             @Override

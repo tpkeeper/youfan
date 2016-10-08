@@ -40,7 +40,7 @@
             android:src="@drawable/top_message2" />
     </RelativeLayout>
 
-    <com.tk.youfan.view.OverScrollView
+    <com.tk.youfan.view.ReboundScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
@@ -432,5 +432,5 @@
                     android:gravity="right|center_vertical" />
             </LinearLayout>
         </LinearLayout>
-    </com.tk.youfan.view.OverScrollView>
+    </com.tk.youfan.view.ReboundScrollView>
 </LinearLayout>

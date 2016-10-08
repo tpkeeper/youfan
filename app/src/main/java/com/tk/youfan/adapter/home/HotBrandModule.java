@@ -73,6 +73,8 @@ public class HotBrandModule extends BaseHolder {
             Glide.with(mContext)
                     .load(data.getImg())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.drawable.default100)
+                    .error(R.drawable.default100)
                     .into(img_grid);
             img_grid.setOnClickListener(new View.OnClickListener() {
                 @Override

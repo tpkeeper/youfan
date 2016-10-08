@@ -1,5 +1,6 @@
 package com.tk.youfan.activity;
 
+import android.app.Activity;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -32,7 +33,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
 
-public class GoodsDetailActivity extends AppCompatActivity {
+public class GoodsDetailActivity extends Activity {
 
     @Bind(R.id.viewpager)
     ViewPager viewpager;

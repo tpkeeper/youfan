@@ -46,6 +46,8 @@ public class BrandDetailViewHolder extends BaseHolder {
         Glide.with(mContext)
                 .load(clsInfo.getMainImage())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.drawable.default100)
+                .error(R.drawable.default100)
                 .into(img_goods);
         img_goods.setOnClickListener(new View.OnClickListener() {
             @Override

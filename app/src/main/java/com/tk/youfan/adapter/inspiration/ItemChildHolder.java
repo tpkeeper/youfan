@@ -41,6 +41,8 @@ public class ItemChildHolder extends BaseHolder {
         Glide.with(mContext)
                 .load(itemChild.getImg())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.drawable.default100)
+                .error(R.drawable.default100)
                 .into(img_item_inspiration_child);
         tv_title.setText(itemChild.getTitle());
         relt_item_inspiration.setOnClickListener(new View.OnClickListener() {

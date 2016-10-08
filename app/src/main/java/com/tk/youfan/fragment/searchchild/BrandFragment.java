@@ -1,5 +1,6 @@
 package com.tk.youfan.fragment.searchchild;
 
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,6 +29,7 @@ import com.tk.youfan.utils.Constants;
 import com.tk.youfan.utils.LogUtil;
 import com.tk.youfan.utils.SPUtils;
 import com.tk.youfan.utils.UrlContants;
+import com.tk.youfan.utils.loadingandretry.LoadingAndRetryLayout;
 import com.tk.youfan.utils.loadingandretry.LoadingAndRetryManager;
 import com.tk.youfan.utils.loadingandretry.OnLoadingAndRetryListener;
 import com.tk.youfan.view.DividerItemDecoration;
@@ -89,7 +91,9 @@ public class BrandFragment extends BaseFragment {
             public void setRetryEvent(View retryView) {
                 BrandFragment.this.setRetryEvent(retryView);
             }
+
         });
+
         mloadingAndRetryManager.showLoading();
         getDataFromNet();
     }

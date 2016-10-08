@@ -43,6 +43,8 @@ public class ImgListV4ModuleHolder extends BaseHolder {
         Glide.with(mContext)
                 .load(dataList.get(0).getImg())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.drawable.default100)
+                .error(R.drawable.default100)
                 .into(img_big);
         gridview.setAdapter(new MyBaseAdapter());
     }

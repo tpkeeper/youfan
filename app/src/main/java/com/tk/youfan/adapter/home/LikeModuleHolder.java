@@ -170,6 +170,8 @@ public class LikeModuleHolder extends BaseHolder {
             Glide.with(mContext)
                     .load(likeModuleProduct.getProduct_url())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.drawable.default100)
+                    .error(R.drawable.default100)
                     .into(img_like);
             if(likeModuleProduct.getProdClsTag() == null||likeModuleProduct.getProdClsTag().size()==0) {
                 return;
@@ -177,6 +179,8 @@ public class LikeModuleHolder extends BaseHolder {
             Glide.with(mContext)
                     .load(likeModuleProduct.getProdClsTag().get(0).getTagUrl())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.drawable.default100)
+                    .error(R.drawable.default100)
                     .into(img_tag);
         }
     }

@@ -50,6 +50,8 @@ public class ImgListV1ModuleHolder extends BaseHolder {
         Glide.with(mContext)
                 .load(data.getImg())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.drawable.default100)
+                .error(R.drawable.default100)
                 .into(img_big);
         horizontal_scrollview.removeAllViews();
         img_big.setOnClickListener(new View.OnClickListener() {
@@ -72,6 +74,8 @@ public class ImgListV1ModuleHolder extends BaseHolder {
             Glide.with(mContext)
                     .load(data1.getImg())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.drawable.default100)
+                    .error(R.drawable.default100)
                     .into(img_little);
             img_little.setOnClickListener(new View.OnClickListener() {
                 @Override

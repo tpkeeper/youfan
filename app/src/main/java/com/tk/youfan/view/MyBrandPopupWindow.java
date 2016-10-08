@@ -1,6 +1,7 @@
 package com.tk.youfan.view;
 
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -51,10 +52,10 @@ public class MyBrandPopupWindow extends PopupWindow implements OnQuickSideBarTou
     QuickSideBarView quickSideBarView;
     private List<GroupData> groupDatas;
     private List<BrandInfo> brandInfoList;
-    HashMap<String,Integer> letters = new HashMap<>();
+    HashMap<String, Integer> letters = new HashMap<>();
     ImageView img_dismiss;
 
-    public MyBrandPopupWindow(Context mContext, View.OnClickListener itemsOnClick) {
+    public MyBrandPopupWindow(final Context mContext, View.OnClickListener itemsOnClick) {
         this.mContext = mContext;
         this.view = LayoutInflater.from(mContext).inflate(R.layout.brand_popupwindow_layout, null);
         img_dismiss = (ImageView) view.findViewById(R.id.img_dismiss);
@@ -65,6 +66,16 @@ public class MyBrandPopupWindow extends PopupWindow implements OnQuickSideBarTou
             public void setRetryEvent(View retryView) {
 
                 MyBrandPopupWindow.this.setRetryEvent(retryView);
+            }
+            //重写加载动画
+            @Override
+            public View generateLoadingLayout() {
+                ImageView imageView = new ImageView(mContext);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                imageView.setImageResource(R.drawable.loadingicons);
+                AnimationDrawable animationDrawable = (AnimationDrawable) imageView.getDrawable();
+                animationDrawable.start();
+                return imageView;
             }
         });
         mloadingAndRetryManager.showLoading();
@@ -116,6 +127,7 @@ public class MyBrandPopupWindow extends PopupWindow implements OnQuickSideBarTou
         this.setAnimationStyle(R.style.pop_brand);
 
     }
+
     private void setRetryEvent(View retryView) {
         View view = retryView.findViewById(R.id.id_btn_retry);
         view.setOnClickListener(new View.OnClickListener() {
@@ -126,6 +138,7 @@ public class MyBrandPopupWindow extends PopupWindow implements OnQuickSideBarTou
             }
         });
     }
+
     private void getDataFromNet() {
         String url = UrlContants.SORT_BRAND_BLACK_LIFE;
         OkHttpUtils.get()
@@ -136,20 +149,29 @@ public class MyBrandPopupWindow extends PopupWindow implements OnQuickSideBarTou
 
     /**
      * extends from OnQuickSideBarTouchListener
+     *
      * @param letter
      * @param position
      * @param y
      */
     @Override
     public void onLetterChanged(String letter, int position, float y) {
-
+        if (letters.containsKey(letter)) {
+            for (int i = 0;i<brandInfoList.size();i++){
+                BrandInfo brandInfo = brandInfoList.get(i);
+                String let = brandInfo.getFirst_letter();
+                if (letter.equals(let)) {
+                    recyclerview.scrollToPosition(i);
+                    return;
+                }
+            }
+        }
     }
 
     @Override
     public void onLetterTouching(boolean touching) {
 
     }
-
 
 
     private class MyStringCallBack extends StringCallback {
@@ -176,9 +198,9 @@ public class MyBrandPopupWindow extends PopupWindow implements OnQuickSideBarTou
         groupDatas = JSON.parseArray(data, GroupData.class);
         List<BrandInfo> brandInfos;
         brandInfoList = new ArrayList<>();
-        for (int i= 0;i<groupDatas.size();i++){
+        for (int i = 0; i < groupDatas.size(); i++) {
             brandInfos = groupDatas.get(i).getBrandInfo();
-            for (int j = 0;j<brandInfos.size();j++){
+            for (int j = 0; j < brandInfos.size(); j++) {
                 brandInfoList.add(brandInfos.get(j));
             }
         }
@@ -195,7 +217,7 @@ public class MyBrandPopupWindow extends PopupWindow implements OnQuickSideBarTou
         recyclerview.setLayoutManager(layoutManager);
 
         // Add the sticky headers decoration
-        BrandSequenceListAdapter adapter = new BrandSequenceListAdapter(mContext,brandInfoList);
+        BrandSequenceListAdapter adapter = new BrandSequenceListAdapter(mContext, brandInfoList);
 
 //       定义lettler
         ArrayList<String> customLetters = new ArrayList<>();
