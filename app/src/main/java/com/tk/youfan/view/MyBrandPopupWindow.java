@@ -24,6 +24,8 @@ import com.tk.youfan.domain.search.brandrequence.BrandInfo;
 import com.tk.youfan.domain.search.brandrequence.GroupData;
 import com.tk.youfan.utils.LogUtil;
 import com.tk.youfan.utils.UrlContants;
+import com.tk.youfan.utils.loadingandretry.LoadingAndRetryManager;
+import com.tk.youfan.utils.loadingandretry.OnLoadingAndRetryListener;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.Callback;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -41,6 +43,7 @@ import okhttp3.Call;
  * 作用：xxxx
  */
 public class MyBrandPopupWindow extends PopupWindow implements OnQuickSideBarTouchListener {
+    private final LoadingAndRetryManager mloadingAndRetryManager;
     private Context mContext;
     private View view;
     private Button btn_cancel, btn_sure;
@@ -50,12 +53,22 @@ public class MyBrandPopupWindow extends PopupWindow implements OnQuickSideBarTou
     private List<BrandInfo> brandInfoList;
     HashMap<String,Integer> letters = new HashMap<>();
     ImageView img_dismiss;
+
     public MyBrandPopupWindow(Context mContext, View.OnClickListener itemsOnClick) {
         this.mContext = mContext;
         this.view = LayoutInflater.from(mContext).inflate(R.layout.brand_popupwindow_layout, null);
         img_dismiss = (ImageView) view.findViewById(R.id.img_dismiss);
         recyclerview = (RecyclerView) view.findViewById(R.id.recyclerview);
         quickSideBarView = (QuickSideBarView) view.findViewById(R.id.quickSideBarView);
+        mloadingAndRetryManager = new LoadingAndRetryManager(recyclerview, new OnLoadingAndRetryListener() {
+            @Override
+            public void setRetryEvent(View retryView) {
+
+                MyBrandPopupWindow.this.setRetryEvent(retryView);
+            }
+        });
+        mloadingAndRetryManager.showLoading();
+
         //放到前边
         getDataFromNet();
         img_dismiss.setOnClickListener(new View.OnClickListener() {
@@ -103,7 +116,16 @@ public class MyBrandPopupWindow extends PopupWindow implements OnQuickSideBarTou
         this.setAnimationStyle(R.style.pop_brand);
 
     }
-
+    private void setRetryEvent(View retryView) {
+        View view = retryView.findViewById(R.id.id_btn_retry);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mloadingAndRetryManager.showLoading();
+                getDataFromNet();
+            }
+        });
+    }
     private void getDataFromNet() {
         String url = UrlContants.SORT_BRAND_BLACK_LIFE;
         OkHttpUtils.get()
@@ -133,6 +155,7 @@ public class MyBrandPopupWindow extends PopupWindow implements OnQuickSideBarTou
     private class MyStringCallBack extends StringCallback {
         @Override
         public void onError(Call call, Exception e, int id) {
+            mloadingAndRetryManager.showRetry();
             LogUtil.e("okhttputil load data err in myBrandPopupwindow");
         }
 
@@ -140,6 +163,7 @@ public class MyBrandPopupWindow extends PopupWindow implements OnQuickSideBarTou
         public void onResponse(String response, int id) {
             if (TextUtils.isEmpty(response)) {
                 LogUtil.e("response is null in mybrandpopupwindow");
+                mloadingAndRetryManager.showEmpty();
                 return;
             }
             processData(response);
@@ -158,6 +182,7 @@ public class MyBrandPopupWindow extends PopupWindow implements OnQuickSideBarTou
                 brandInfoList.add(brandInfos.get(j));
             }
         }
+        mloadingAndRetryManager.showContent();
         initData();
     }
 

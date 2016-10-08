@@ -30,6 +30,9 @@ import com.tk.youfan.utils.Constants;
 import com.tk.youfan.utils.LogUtil;
 import com.tk.youfan.utils.SPUtils;
 import com.tk.youfan.utils.UrlContants;
+import com.tk.youfan.utils.loadingandretry.LoadingAndRetryLayout;
+import com.tk.youfan.utils.loadingandretry.LoadingAndRetryManager;
+import com.tk.youfan.utils.loadingandretry.OnLoadingAndRetryListener;
 import com.tk.youfan.view.DividerItemDecoration;
 import com.tk.youfan.view.MyPopupWindow;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -75,12 +78,17 @@ public class HomeFragment extends BaseFragment {
     private int state = NORMAL;
     private SPUtils spUtils;
     private int urlType;
+    private String title;
+    public LoadingAndRetryManager mloadingAndRetryManager;
+
 
     @Override
     public View initView() {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.home_fragment, null);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.home_fragment,null);
         ButterKnife.bind(this, view);
         EventBus.getDefault().register(this);
+        initListener();
+        initRefresh();
         return view;
     }
 
@@ -88,10 +96,26 @@ public class HomeFragment extends BaseFragment {
     public void initData(Bundle savedInstanceState) {
         spUtils = new SPUtils(mContext, Constants.SP_NAME);
         super.initData(savedInstanceState);
+        //loadingandretrymanager
+        mloadingAndRetryManager = new LoadingAndRetryManager(refreshlayout, new OnLoadingAndRetryListener() {
+            @Override
+            public void setRetryEvent(View retryView) {
 
-        initListener();
+                HomeFragment.this.setRetryEvent(retryView);
+            }
+        });
+        mloadingAndRetryManager.showLoading();
         getDataFromNet();
-        initRefresh();
+    }
+    private void setRetryEvent(View retryView) {
+        View view = retryView.findViewById(R.id.id_btn_retry);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mloadingAndRetryManager.showLoading();
+                getDataFromNet();
+            }
+        });
     }
 
     private void initListener() {
@@ -104,11 +128,11 @@ public class HomeFragment extends BaseFragment {
      * 从网络获取数据,也用于刷新数据，初始化，刷新都会走此方法
      */
     public void getDataFromNet() {
-        if (spUtils.getInt(Constants.GENDER, Constants.URL_TYPE_NO) != Constants.URL_TYPE_NO){
+        if (spUtils.getInt(Constants.GENDER, Constants.URL_TYPE_NO) != Constants.URL_TYPE_NO) {
             //恢复页面url
-            urlType = spUtils.getInt(Constants.GENDER,Constants.URL_TYPE_NO);
+            urlType = spUtils.getInt(Constants.GENDER, Constants.URL_TYPE_NO);
             //恢复title
-            String title = "男生";
+            title = "男生";
             switch (urlType) {
                 case Constants.URL_TYPE_MAN:
                     title = "男生";
@@ -123,8 +147,8 @@ public class HomeFragment extends BaseFragment {
                     url = UrlContants.HOME_LIFE;
                     break;
             }
-            tv_men_women.setText(title);
-        }else{
+
+        } else {
             //默认加载男生
             url = UrlContants.HOME_MEN;
             spUtils.putInt(Constants.GENDER, Constants.URL_TYPE_MAN);
@@ -144,7 +168,7 @@ public class HomeFragment extends BaseFragment {
         EventBus.getDefault().unregister(this);
     }
 
-    @OnClick({R.id.top_cebian_main, R.id.top_search_main,R.id.tv_men_women})
+    @OnClick({R.id.top_cebian_main, R.id.top_search_main, R.id.tv_men_women})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.top_cebian_main:
@@ -161,10 +185,12 @@ public class HomeFragment extends BaseFragment {
         @Override
         public void onError(Call call, Exception e, int id) {
             LogUtil.e("okhttputils load data err ！");
+            mloadingAndRetryManager.showRetry();
         }
 
         @Override
         public void onResponse(String response, int id) {
+
             processData(response);
         }
     }
@@ -172,12 +198,14 @@ public class HomeFragment extends BaseFragment {
     private void processData(String response) {
         if (TextUtils.isEmpty(response)) {
             LogUtil.e("home response is empty !!");
+            mloadingAndRetryManager.showEmpty();
             return;
         }
         JSONObject jsonObject = JSON.parseObject(response);
         String data = jsonObject.getString("data");
         HomeData homeData = JSON.parseObject(data, HomeData.class);
         moduleList = homeData.getModule();
+        mloadingAndRetryManager.showContent();
         EventBus.getDefault().post(new EventMessage(EventMessage.MESSAGE_DATA_GETED_HomeData));
     }
 
@@ -205,8 +233,10 @@ public class HomeFragment extends BaseFragment {
                         state = NORMAL;
                         break;
                 }
+                tv_men_women.setText(title);
                 break;
         }
+
     }
 
     private void initRefresh() {
@@ -238,9 +268,7 @@ public class HomeFragment extends BaseFragment {
     private class MyOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-
             tv_men_women.setSelected(!tv_men_women.isSelected());
-
             final MyPopupWindow myPopupWindow = new MyPopupWindow(mContext);
             myPopupWindow.setOnItemClickListener(new MyPopupWindow.OnItemClickListener() {
 

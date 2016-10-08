@@ -58,7 +58,6 @@ public class SearchFragment extends BaseFragment {
     @Override
     public void initData(Bundle savedInstanceState) {
         super.initData(savedInstanceState);
-
         initViewPager();
     }
 

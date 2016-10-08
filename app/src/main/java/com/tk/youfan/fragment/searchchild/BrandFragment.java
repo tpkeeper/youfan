@@ -28,6 +28,8 @@ import com.tk.youfan.utils.Constants;
 import com.tk.youfan.utils.LogUtil;
 import com.tk.youfan.utils.SPUtils;
 import com.tk.youfan.utils.UrlContants;
+import com.tk.youfan.utils.loadingandretry.LoadingAndRetryManager;
+import com.tk.youfan.utils.loadingandretry.OnLoadingAndRetryListener;
 import com.tk.youfan.view.DividerItemDecoration;
 import com.tk.youfan.view.MyBrandPopupWindow;
 import com.tk.youfan.view.MyPopupWindow;
@@ -63,6 +65,8 @@ public class BrandFragment extends BaseFragment {
     private BrandRecyclerViewAdapter brandRecyclerViewAdapter;
     ImageView img_sequence;
     RelativeLayout rla_content;
+    private LoadingAndRetryManager mloadingAndRetryManager;
+
     @Override
     public View initView() {
         View view = LayoutInflater.from(mContext).inflate(R.layout.brand_fragment,null);
@@ -71,15 +75,34 @@ public class BrandFragment extends BaseFragment {
         EventBus.getDefault().register(this);
         recyclerview_brand = (RecyclerView) view.findViewById(R.id.recyclerview_brand);
         rla_content = (RelativeLayout) view.findViewById(R.id.rla_content);
+        initListener();
         return view;
     }
 
     @Override
     public void initData(Bundle savedInstanceState) {
         super.initData(savedInstanceState);
-        initListener();
         spUtils = new SPUtils(mContext, Constants.SP_NAME);
+        //loadingandretrymanager
+        mloadingAndRetryManager = new LoadingAndRetryManager(refreshlayout, new OnLoadingAndRetryListener() {
+            @Override
+            public void setRetryEvent(View retryView) {
+                BrandFragment.this.setRetryEvent(retryView);
+            }
+        });
+        mloadingAndRetryManager.showLoading();
         getDataFromNet();
+    }
+
+    private void setRetryEvent(View retryView) {
+        View view = retryView.findViewById(R.id.id_btn_retry);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mloadingAndRetryManager.showLoading();
+                getDataFromNet();
+            }
+        });
     }
 
     private void initListener() {
@@ -160,6 +183,7 @@ public class BrandFragment extends BaseFragment {
         @Override
         public void onError(Call call, Exception e, int id) {
             LogUtil.e("okhttputils load data err ！");
+            mloadingAndRetryManager.showRetry();
         }
 
         @Override
@@ -171,11 +195,13 @@ public class BrandFragment extends BaseFragment {
     private void processData(String response) {
         if (TextUtils.isEmpty(response)) {
             LogUtil.e("home response is empty !!");
+            mloadingAndRetryManager.showEmpty();
             return;
         }
         JSONObject jsonObject = JSON.parseObject(response);
         String data = jsonObject.getString("data");
         brandList = JSON.parseArray(data, Brand.class);
+        mloadingAndRetryManager.showContent();
         EventBus.getDefault().post(new EventMessage(EventMessage.MESSAGE_DATA_GETED_SEARCH_BRAND_DATA));
     }
 

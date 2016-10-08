@@ -27,6 +27,8 @@ import com.tk.youfan.fragment.searchchild.CategoryFragment;
 import com.tk.youfan.fragment.searchchild.TrendFragment;
 import com.tk.youfan.utils.LogUtil;
 import com.tk.youfan.utils.UrlContants;
+import com.tk.youfan.utils.loadingandretry.LoadingAndRetryManager;
+import com.tk.youfan.utils.loadingandretry.OnLoadingAndRetryListener;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.Callback;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -54,6 +56,7 @@ public class InspirationFragment extends BaseFragment {
     ViewPager viewpager;
     private List<InspirationChildFragment> inspirationChildFragments;
     private List<Title> titleList;
+    private LoadingAndRetryManager mloadingAndRetryManager;
 
     @Override
     public View initView() {
@@ -68,9 +71,26 @@ public class InspirationFragment extends BaseFragment {
     @Override
     public void initData(Bundle savedInstanceState) {
         super.initData(savedInstanceState);
+        //loadingandretrymanager
+        mloadingAndRetryManager = new LoadingAndRetryManager(viewpager, new OnLoadingAndRetryListener() {
+            @Override
+            public void setRetryEvent(View retryView) {
+                InspirationFragment.this.setRetryEvent(retryView);
+            }
+        });
+        mloadingAndRetryManager.showLoading();
         getDataFromNet();
     }
-
+    private void setRetryEvent(View retryView) {
+        View view = retryView.findViewById(R.id.id_btn_retry);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mloadingAndRetryManager.showLoading();
+                getDataFromNet();
+            }
+        });
+    }
     @Override
     public void getDataFromNet() {
         super.getDataFromNet();
@@ -131,12 +151,14 @@ public class InspirationFragment extends BaseFragment {
         @Override
         public void onError(Call call, Exception e, int id) {
             LogUtil.e("okhttp load err in inspiration fragment!!!");
+            mloadingAndRetryManager.showRetry();
         }
 
         @Override
         public void onResponse(String response, int id) {
             if (TextUtils.isEmpty(response)) {
                 LogUtil.e("response is empty in inspirationfragment ");
+                mloadingAndRetryManager.showEmpty();
                 return;
             }
             processData(response);
@@ -149,7 +171,7 @@ public class InspirationFragment extends BaseFragment {
         JSONObject dataObject = JSON.parseObject(data);
         String attr = dataObject.getString("attr");
         titleList = JSON.parseArray(attr, Title.class);
-
+        mloadingAndRetryManager.showContent();
         EventBus.getDefault().post(new EventMessage(EventMessage.MESSAGE_DATA_GETED_INSPIRATION_TITLE_DATA));
     }
 

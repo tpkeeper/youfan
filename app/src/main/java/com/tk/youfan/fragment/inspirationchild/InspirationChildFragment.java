@@ -27,6 +27,8 @@ import com.tk.youfan.utils.Constants;
 import com.tk.youfan.utils.LogUtil;
 import com.tk.youfan.utils.SPUtils;
 import com.tk.youfan.utils.UrlContants;
+import com.tk.youfan.utils.loadingandretry.LoadingAndRetryManager;
+import com.tk.youfan.utils.loadingandretry.OnLoadingAndRetryListener;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -55,6 +57,7 @@ public class InspirationChildFragment extends BaseFragment {
     private static final int NORMAL = 0;
     private int state = NORMAL;
     private InspirationChildViewAdapter inspirationChildViewAdapter;
+    private LoadingAndRetryManager mloadingAndRetryManager;
 
     public InspirationChildFragment() {
     }
@@ -67,14 +70,14 @@ public class InspirationChildFragment extends BaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(savedInstanceState != null) {
-         url =   savedInstanceState.getString("itemChildUrl");
+        if (savedInstanceState != null) {
+            url = savedInstanceState.getString("itemChildUrl");
         }
     }
 
     @Override
     public View initView() {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.inspiration_child_fragment,null);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.inspiration_child_fragment, null);
         refreshlayout = (MaterialRefreshLayout) view.findViewById(R.id.refreshlayout_inspiration_child);
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview_inspiration_child);
         return view;
@@ -84,15 +87,33 @@ public class InspirationChildFragment extends BaseFragment {
     public void initData(Bundle savedInstanceState) {
         super.initData(savedInstanceState);
         spUtils = new SPUtils(mContext, Constants.SP_NAME);
+        //loadingandretrymanager
+        mloadingAndRetryManager = new LoadingAndRetryManager(refreshlayout, new OnLoadingAndRetryListener() {
+            @Override
+            public void setRetryEvent(View retryView) {
+                InspirationChildFragment.this.setRetryEvent(retryView);
+            }
+        });
+        mloadingAndRetryManager.showLoading();
         getDataFromNet();
     }
 
+    private void setRetryEvent(View retryView) {
+        View view = retryView.findViewById(R.id.id_btn_retry);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mloadingAndRetryManager.showLoading();
+                getDataFromNet();
+            }
+        });
+    }
 
     /**
      * 从网络获取数据,也用于刷新数据，初始化，刷新都会走此方法
      */
     public void getDataFromNet() {
-        if(TextUtils.isEmpty(url)) {
+        if (TextUtils.isEmpty(url)) {
             LogUtil.e("url in inspiration child fragment is null");
             return;
         }
@@ -124,6 +145,7 @@ public class InspirationChildFragment extends BaseFragment {
         @Override
         public void onError(Call call, Exception e, int id) {
             LogUtil.e("okhttputils load data err ！");
+            mloadingAndRetryManager.showRetry();
         }
 
         @Override
@@ -135,6 +157,7 @@ public class InspirationChildFragment extends BaseFragment {
     private void processData(String response) {
         if (TextUtils.isEmpty(response)) {
             LogUtil.e("home response is empty !!");
+            mloadingAndRetryManager.showEmpty();
             return;
         }
         JSONObject jsonObject = JSON.parseObject(response);
@@ -142,27 +165,27 @@ public class InspirationChildFragment extends BaseFragment {
         JSONObject dataObject = JSON.parseObject(data);
         String list = dataObject.getString("list");
         itemChildList = JSON.parseArray(list, ItemChild.class);
-
+        mloadingAndRetryManager.showContent();
         afterDataGeted();
 
     }
 
-    public void  afterDataGeted() {
+    public void afterDataGeted() {
 
-                switch (state) {
-                    case NORMAL:
-                        //初始化recycleView
-                        initRecycleView();
-                        //初始化materialRefresh
-                        initRefresh();
-                        break;
-                    case REFRESH:
-                        inspirationChildViewAdapter.setData(itemChildList);
-                        refreshlayout.finishRefresh();
-                        //还原状态
-                        state = NORMAL;
-                        break;
-                }
+        switch (state) {
+            case NORMAL:
+                //初始化recycleView
+                initRecycleView();
+                //初始化materialRefresh
+                initRefresh();
+                break;
+            case REFRESH:
+                inspirationChildViewAdapter.setData(itemChildList);
+                refreshlayout.finishRefresh();
+                //还原状态
+                state = NORMAL;
+                break;
+        }
 
     }
 
@@ -183,7 +206,7 @@ public class InspirationChildFragment extends BaseFragment {
 
     private void initRecycleView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
-        inspirationChildViewAdapter = new InspirationChildViewAdapter(itemChildList,mContext);
+        inspirationChildViewAdapter = new InspirationChildViewAdapter(itemChildList, mContext);
         recyclerView.setAdapter(inspirationChildViewAdapter);
         recyclerView.setLayoutManager(linearLayoutManager);
     }
@@ -191,6 +214,6 @@ public class InspirationChildFragment extends BaseFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("itemChildUrl",url);
+        outState.putString("itemChildUrl", url);
     }
 }

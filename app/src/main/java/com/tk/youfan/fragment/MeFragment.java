@@ -24,13 +24,13 @@ public class MeFragment extends BaseFragment {
     public View initView() {
         View view = LayoutInflater.from(mContext).inflate(R.layout.me_fragment,null);
         scan = (LinearLayout) view.findViewById(R.id.scan);
+        initListener();
         return view;
     }
 
     @Override
     public void initData(Bundle savedInstanceState) {
         super.initData(savedInstanceState);
-        initListener();
     }
 
     private void initListener() {

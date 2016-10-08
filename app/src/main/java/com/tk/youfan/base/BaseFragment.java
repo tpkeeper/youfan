@@ -9,6 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tk.youfan.R;
+import com.tk.youfan.utils.loadingandretry.LoadingAndRetryManager;
+import com.tk.youfan.utils.loadingandretry.OnLoadingAndRetryListener;
+
 /**
  * 作者：tpkeeper on 2016/9/27 23:51
  * 微信：lzy1056883354
@@ -18,6 +22,7 @@ import android.view.ViewGroup;
 public abstract class BaseFragment extends Fragment {
     private static final String STATE_IS_HIDDEN = "state_is_hidden";
     public Context mContext;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +38,10 @@ public abstract class BaseFragment extends Fragment {
             }
             ft.commit();
         }
+
     }
+
+
 
     @Nullable
     @Override
@@ -43,9 +51,9 @@ public abstract class BaseFragment extends Fragment {
     }
 
 
-
     /**
      * 初始化布局
+     *
      * @return
      */
     public abstract View initView();
@@ -54,13 +62,14 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         initData(savedInstanceState);
     }
 
     /**
      * 初始化数据,Bundle savedInstanceState用于恢复数据
      */
-    public void initData(Bundle savedInstanceState){
+    public void initData(Bundle savedInstanceState) {
 
     }
 
@@ -72,9 +81,9 @@ public abstract class BaseFragment extends Fragment {
     }
 
     /**
-     * 用于刷新呢数据
+     * 用于刷新数据
      */
-    public void getDataFromNet(){
+    public void getDataFromNet() {
 
     }
 }

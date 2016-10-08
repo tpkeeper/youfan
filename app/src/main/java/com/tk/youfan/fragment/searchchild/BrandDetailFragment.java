@@ -16,6 +16,8 @@ import com.tk.youfan.base.BaseFragment;
 import com.tk.youfan.domain.search.branddetail.BrandDetailResult;
 import com.tk.youfan.utils.LogUtil;
 import com.tk.youfan.utils.UrlContants;
+import com.tk.youfan.utils.loadingandretry.LoadingAndRetryManager;
+import com.tk.youfan.utils.loadingandretry.OnLoadingAndRetryListener;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.Callback;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -33,6 +35,7 @@ import okhttp3.Call;
 public class BrandDetailFragment extends BaseFragment {
     private String url ;
     private List<BrandDetailResult> brandDetailResultList;
+    private LoadingAndRetryManager mloadingAndRetryManager;
 
     public BrandDetailFragment(String url) {
         this.url = url;
@@ -49,9 +52,28 @@ public class BrandDetailFragment extends BaseFragment {
     @Override
     public void initData(Bundle savedInstanceState) {
         super.initData(savedInstanceState);
+        //loadingandretrymanager
+        mloadingAndRetryManager = new LoadingAndRetryManager(recyclerview, new OnLoadingAndRetryListener() {
+            @Override
+            public void setRetryEvent(View retryView) {
+                BrandDetailFragment.this.setRetryEvent(retryView);
+            }
+        });
+
         if(!TextUtils.isEmpty(url)) {
+            mloadingAndRetryManager.showLoading();
             getDataFromNet();
         }
+    }
+    private void setRetryEvent(View retryView) {
+        View view = retryView.findViewById(R.id.id_btn_retry);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mloadingAndRetryManager.showLoading();
+                getDataFromNet();
+            }
+        });
     }
 
     @Override
@@ -67,14 +89,17 @@ public class BrandDetailFragment extends BaseFragment {
         @Override
         public void onError(Call call, Exception e, int id) {
             LogUtil.e("okhttp get data err in brandDetailFragment !");
+            mloadingAndRetryManager.showRetry();
         }
 
         @Override
         public void onResponse(String response, int id) {
             if(TextUtils.isEmpty(response)) {
                 LogUtil.e("response is null in brandDetailFragment");
+                mloadingAndRetryManager.showEmpty();
                 return;
             }
+            mloadingAndRetryManager.showContent();
             processData(response);
         }
     }

@@ -1,6 +1,7 @@
 package com.tk.youfan.adapter.search;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.view.View;
 import android.widget.ImageView;
@@ -10,6 +11,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.FileDescriptorBitmapDataLoadProvider;
 import com.tk.youfan.R;
+import com.tk.youfan.activity.GoodsDetailActivity;
 import com.tk.youfan.base.BaseHolder;
 import com.tk.youfan.domain.home.Module;
 import com.tk.youfan.domain.search.branddetail.BrandDetailResult;
@@ -39,12 +41,20 @@ public class BrandDetailViewHolder extends BaseHolder {
     @Override
     public void setData(Module module) {
     }
-    public void setBrandDetailData(BrandDetailResult brandDetailResult){
+    public void setBrandDetailData(final BrandDetailResult brandDetailResult){
         ClsInfo clsInfo = brandDetailResult.getClsInfo();
         Glide.with(mContext)
                 .load(clsInfo.getMainImage())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(img_goods);
+        img_goods.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, GoodsDetailActivity.class);
+                intent.putExtra("code",brandDetailResult.getClsInfo().getCode());
+                mContext.startActivity(intent);
+            }
+        });
         tv_brand.setText(clsInfo.getBrand());
         tv_name.setText(clsInfo.getName());
         tv_sale_price.setText("￥"+clsInfo.getSale_price());
