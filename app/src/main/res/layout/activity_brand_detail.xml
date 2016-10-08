@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
@@ -55,7 +55,7 @@
     <com.tk.youfan.view.ObservableScrollView
         android:id="@+id/scrollView_brand_detail"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <FrameLayout
             android:layout_width="fill_parent"
@@ -89,7 +89,6 @@
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="80dp"
-                            android:text="xxx"
                             android:textSize="18sp" />
 
                         <Button
@@ -145,7 +144,7 @@
                     app:stl_defaultTabTextColor="@color/tab_text_color_selector"
                     app:stl_defaultTabTextHorizontalPadding="30dp"
                     app:stl_defaultTabTextMinWidth="5dp"
-                    app:stl_defaultTabTextSize="12sp"
+                    app:stl_defaultTabTextSize="15sp"
                     app:stl_distributeEvenly="false"
                     app:stl_dividerColor="#4D000000"
                     app:stl_dividerThickness="0dp"
@@ -174,8 +173,8 @@
                     android:text="筛选"
                     android:gravity="center"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginRight="15dp"
-                    android:textSize="18sp" />
+                    android:layout_marginRight="20dp"
+                    android:textSize="15sp" />
             </LinearLayout>
         </FrameLayout>
     </com.tk.youfan.view.ObservableScrollView>

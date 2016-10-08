@@ -118,5 +118,6 @@ public class BrandDetailFragment extends BaseFragment {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(mContext,2);
         recyclerview.setAdapter(adapter);
         recyclerview.setLayoutManager(gridLayoutManager);
+        recyclerview.setNestedScrollingEnabled(false);
     }
 }

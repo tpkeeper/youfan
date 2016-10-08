@@ -117,6 +117,13 @@ public class BrandDetailActivity extends FragmentActivity implements ObservableS
         scrollViewBrandDetail.scrollTo(0, 0);
         scrollViewBrandDetail.smoothScrollTo(0, 0);
 
+        tvSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
     }
 
     @OnClick({R.id.top_cebian_brand_detail, R.id.tv_men_women_brand_detail, R.id.top_search_brand_detail, R.id.top_share_brand_detail})
@@ -209,7 +216,6 @@ public class BrandDetailActivity extends FragmentActivity implements ObservableS
         public MyfragmentViewPagerAdapter(FragmentManager fm) {
             super(fm);
         }
-
 
         @Override
         public Fragment getItem(int position) {
