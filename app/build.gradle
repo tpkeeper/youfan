@@ -35,4 +35,5 @@ dependencies {
     compile project(':MaterialRefreshLayout_library')
     compile project(':SmartTabLayout_library')
     compile project(':quicksidebar')
+    compile project(':LoadingDrawablelibrary')
 }
