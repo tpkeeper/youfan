@@ -32,6 +32,7 @@ import com.tk.youfan.utils.UrlContants;
 import com.tk.youfan.utils.loadingandretry.LoadingAndRetryLayout;
 import com.tk.youfan.utils.loadingandretry.LoadingAndRetryManager;
 import com.tk.youfan.utils.loadingandretry.OnLoadingAndRetryListener;
+import com.tk.youfan.view.DividerGridItemDecoration;
 import com.tk.youfan.view.DividerItemDecoration;
 import com.tk.youfan.view.MyBrandPopupWindow;
 import com.tk.youfan.view.MyPopupWindow;
@@ -261,6 +262,7 @@ public class BrandFragment extends BaseFragment {
         brandRecyclerViewAdapter = new BrandRecyclerViewAdapter(brandList,mContext);
         recyclerview_brand.setAdapter(brandRecyclerViewAdapter);
         recyclerview_brand.setLayoutManager(gridLayoutManager);
+        recyclerview_brand.addItemDecoration(new DividerGridItemDecoration(mContext));
     }
 
 
