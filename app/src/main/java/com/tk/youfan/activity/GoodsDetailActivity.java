@@ -3,6 +3,7 @@ package com.tk.youfan.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -35,6 +36,8 @@ import com.tk.youfan.fragment.goodsdetail.ReviewFragment;
 import com.tk.youfan.utils.LogUtil;
 import com.tk.youfan.utils.ScreenUtils;
 import com.tk.youfan.utils.UrlContants;
+import com.tk.youfan.utils.loadingandretry.LoadingAndRetryManager;
+import com.tk.youfan.utils.loadingandretry.OnLoadingAndRetryListener;
 import com.tk.youfan.view.GoodsSelectPopupWindow;
 import com.tk.youfan.view.MySlideDetails;
 import com.tk.youfan.view.ObservableScrollView;
@@ -51,7 +54,7 @@ import cn.bleu.widget.slidedetails.SlideDetailsLayout;
 import okhttp3.Call;
 
 public class GoodsDetailActivity extends FragmentActivity {
-
+    private LoadingAndRetryManager mloadingAndRetryManager;
     @Bind(R.id.viewpager)
     ViewPager viewpager;
     @Bind(R.id.tv_indicate)
@@ -84,6 +87,8 @@ public class GoodsDetailActivity extends FragmentActivity {
     ViewPager viewpager_content;
     @Bind(R.id.lin_all)
     LinearLayout lin_all;
+    @Bind(R.id.lin_top)
+    LinearLayout lin_top;
     private GoodsDetail goodsDetail;
     private List<GoodsDetail.ProPicUrlBean> proPicUrlBeanList;
     private int scrollViewHight;
@@ -100,9 +105,41 @@ public class GoodsDetailActivity extends FragmentActivity {
         //获取goods的Code
         code = getIntent().getStringExtra("code");
         initListener();
+        getData();
+    }
+    private void getData(){
+        //loadingpage加载
+        mloadingAndRetryManager = new LoadingAndRetryManager(lin_top, new OnLoadingAndRetryListener() {
+            @Override
+            public void setRetryEvent(View retryView) {
+
+                GoodsDetailActivity.this.setRetryEvent(retryView);
+            }
+            //重写加载动画
+            @Override
+            public View generateLoadingLayout() {
+                ImageView imageView = new ImageView(GoodsDetailActivity.this);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                imageView.setImageResource(R.drawable.loadingicons);
+                AnimationDrawable animationDrawable = (AnimationDrawable) imageView.getDrawable();
+                animationDrawable.start();
+                return imageView;
+            }
+        });
+        mloadingAndRetryManager.showLoading();
+
         getDataFromNet();
     }
-
+    private void setRetryEvent(View retryView) {
+        View view = retryView.findViewById(R.id.id_btn_retry);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mloadingAndRetryManager.showLoading();
+                getDataFromNet();
+            }
+        });
+    }
     private void initListener() {
         btnPurchaseBag.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,12 +193,14 @@ public class GoodsDetailActivity extends FragmentActivity {
     private class MyStringCallBack extends StringCallback {
         @Override
         public void onError(Call call, Exception e, int id) {
+            mloadingAndRetryManager.showRetry();
             LogUtil.e("okhttp load data err in goodsdetailactivity !");
         }
 
         @Override
         public void onResponse(String response, int id) {
             if (TextUtils.isEmpty(response)) {
+                mloadingAndRetryManager.showEmpty();
                 LogUtil.e("response is null in goodsdetailactivity");
                 return;
             }
@@ -174,6 +213,7 @@ public class GoodsDetailActivity extends FragmentActivity {
         String data = jsonObject.getString("data");
         goodsDetail = JSON.parseObject(data, GoodsDetail.class);
         proPicUrlBeanList = goodsDetail.getProPicUrl();
+        mloadingAndRetryManager.showContent();
         initData();
     }
 

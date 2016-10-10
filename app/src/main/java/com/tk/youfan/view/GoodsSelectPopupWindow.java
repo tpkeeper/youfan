@@ -1,17 +1,21 @@
 package com.tk.youfan.view;
 
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -21,6 +25,8 @@ import com.tk.youfan.domain.goodsdetail.GoodsDetailSelect;
 import com.tk.youfan.utils.LogUtil;
 import com.tk.youfan.utils.ScreenUtils;
 import com.tk.youfan.utils.UrlContants;
+import com.tk.youfan.utils.loadingandretry.LoadingAndRetryManager;
+import com.tk.youfan.utils.loadingandretry.OnLoadingAndRetryListener;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.Callback;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -41,7 +47,7 @@ import okhttp3.Response;
  * 作用：xxxx
  */
 public class GoodsSelectPopupWindow extends PopupWindow {
-
+    private LoadingAndRetryManager mloadingAndRetryManager;
     ImageView imgGoodsDetailSelect;
     TextView tvPrice;
     TextView tvStoreCount;
@@ -59,7 +65,10 @@ public class GoodsSelectPopupWindow extends PopupWindow {
     private List<GoodsDetailSelect> goodsDetailSelects;
     private List<String> colorList;
     private List<String> sizeList;
-
+    private String colorSelect;
+    private GoodsDetailSelect goodsDetailSelectNow;
+    private String sizeSelect;
+    LinearLayout rla_top;
     public GoodsSelectPopupWindow(Context mContext, String code) {
         this.code = code;
         this.mContext = mContext;
@@ -102,9 +111,31 @@ public class GoodsSelectPopupWindow extends PopupWindow {
     }
 
     private void initListener() {
+        //设置取消按钮
         btn_cancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dismiss();
+            }
+        });
+        autoSubAdd.setClickListener(new AutoSubAdd.onAddAndSubClickListener() {
+            @Override
+            public void onAddClick(int value) {
+                if(value >= autoSubAdd.getMaxValue()) {
+                    Toast.makeText(mContext,"库存被你购空了，亲！",Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onSubClick(int value) {
+
+            }
+        });
+
+        btnConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(mContext,"已经加入购物车",Toast.LENGTH_SHORT).show();
                 dismiss();
             }
         });
@@ -121,13 +152,43 @@ public class GoodsSelectPopupWindow extends PopupWindow {
         btnConfirm = (Button) view.findViewById(R.id.btn_confirm);
         linPup = (LinearLayout) view.findViewById(R.id.lin_pup);
         btn_cancle = (ImageView) view.findViewById(R.id.btn_cancle);
+        rla_top = (LinearLayout) view.findViewById(R.id.rla_top);
     }
 
     private void initData() {
         url = UrlContants.GOODS_DETAIL_SELECT_PRE + code + UrlContants.GOODS_DETAIL_SELECT_TAIL;
+        //loadingpage加载
+        mloadingAndRetryManager = new LoadingAndRetryManager(rla_top, new OnLoadingAndRetryListener() {
+            @Override
+            public void setRetryEvent(View retryView) {
+
+                GoodsSelectPopupWindow.this.setRetryEvent(retryView);
+            }
+            //重写加载动画
+            @Override
+            public View generateLoadingLayout() {
+                ImageView imageView = new ImageView(mContext);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                imageView.setImageResource(R.drawable.loadingicons);
+                AnimationDrawable animationDrawable = (AnimationDrawable) imageView.getDrawable();
+                animationDrawable.start();
+                return imageView;
+            }
+        });
+        mloadingAndRetryManager.showLoading();
+
         getDataFromNet();
     }
-
+    private void setRetryEvent(View retryView) {
+        View view = retryView.findViewById(R.id.id_btn_retry);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mloadingAndRetryManager.showLoading();
+                getDataFromNet();
+            }
+        });
+    }
     private void getDataFromNet() {
         OkHttpUtils.get()
                 .url(url)
@@ -153,13 +214,16 @@ public class GoodsSelectPopupWindow extends PopupWindow {
     private class MyStringCallBack extends StringCallback {
         @Override
         public void onError(Call call, Exception e, int id) {
+            mloadingAndRetryManager.showRetry();
             LogUtil.e("okhttputils load err in goodsdetailselectpupwindow ");
         }
 
         @Override
         public void onResponse(String response, int id) {
             if (TextUtils.isEmpty(response)) {
+                mloadingAndRetryManager.showEmpty();
                 LogUtil.e("response is empty in goodsdetailselectpupwindow");
+                return;
             }
             processData(response);
         }
@@ -186,13 +250,27 @@ public class GoodsSelectPopupWindow extends PopupWindow {
                 sizeList.add(speC_name);
             }
         }
+
+        mloadingAndRetryManager.showContent();
         //给view设置数据
-        setData();
+        setData(goodsDetailSelects.get(0));
     }
 
-    private void setData() {
-        GoodsDetailSelect goodsDetailSelect = goodsDetailSelects.get(0);
+    private void setData(GoodsDetailSelect goodsDetailSelect) {
+
+        //当前图片
         String coloR_file_path = goodsDetailSelect.getColoR_FILE_PATH();
+        //当前颜色
+        String coloR_name = goodsDetailSelect.getColoR_NAME();
+        colorSelect = coloR_name;
+//        当前尺寸
+        String speC_name = goodsDetailSelect.getSpeC_NAME();
+        sizeSelect = speC_name;
+
+        //设置加减
+        autoSubAdd.setValue(1);
+        autoSubAdd.setMaxValue(goodsDetailSelect.getLisT_QTY());
+        //填充图片 价格，编号
         Glide.with(mContext)
                 .load(coloR_file_path)
                 .placeholder(R.drawable.default100)
@@ -202,11 +280,13 @@ public class GoodsSelectPopupWindow extends PopupWindow {
         tvGoodsId.setText("商品编号:" + goodsDetailSelect.getProD_CLS_NUM());
 
         //填充颜色linGoodsColor
+        //先清空
+        linGoodsColor.removeAllViews();
         View colorView;
         LinearLayout lin_parent = null;
         if (colorList.size() != 0) {
             for (int i = 0; i < colorList.size(); i++) {
-                int childNum = i%4;
+                int childNum = i % 4;
                 if (i % 4 == 0) {
                     colorView = LayoutInflater.from(mContext).inflate(R.layout.item_goods_detail_select_color, null);
                     lin_parent = (LinearLayout) colorView.findViewById(R.id.lin_parent);
@@ -215,16 +295,33 @@ public class GoodsSelectPopupWindow extends PopupWindow {
                 }
                 TextView textView = (TextView) lin_parent.getChildAt(childNum);
                 textView.setVisibility(View.VISIBLE);
+                if(colorList.get(i).equals(coloR_name)) {
+                    textView.setSelected(true);
+                }
                 textView.setText(colorList.get(i));
+                textView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //更新当前color
+                        colorSelect = ((TextView) v).getText().toString();
+                        updateView();
+//                        clearState(v);
+//                        v.setSelected(true);
+                    }
+                });
             }
         }
 
+        //设置当前选中样式color
+
         //填充size
+        //先清空
+        linGoodsSize.removeAllViews();
         View sizeView;
         LinearLayout lin_parent_size = null;
         if (sizeList.size() != 0) {
             for (int i = 0; i < sizeList.size(); i++) {
-                int childNum = i%4;
+                int childNum = i % 4;
                 if (i % 4 == 0) {
                     sizeView = LayoutInflater.from(mContext).inflate(R.layout.item_goods_detail_select_size, null);
                     lin_parent_size = (LinearLayout) sizeView.findViewById(R.id.lin_parent);
@@ -234,6 +331,54 @@ public class GoodsSelectPopupWindow extends PopupWindow {
                 TextView textView = (TextView) lin_parent_size.getChildAt(childNum);
                 textView.setVisibility(View.VISIBLE);
                 textView.setText(sizeList.get(i));
+                if(sizeList.get(i).equals(speC_name)) {
+                    textView.setSelected(true);
+                }else {
+//                    textView.setSelected(false);
+                }
+                textView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //更新当前尺寸
+                        sizeSelect = ((TextView) v).getText().toString();
+                        updateView();
+//                        clearState(v);
+//                        v.setSelected(true);
+                    }
+                });
+            }
+        }
+    }
+
+    //点击颜色或尺寸更新view
+    private void updateView() {
+        //找到对应的样式
+        for (int i = 0; i < goodsDetailSelects.size(); i++) {
+            if(goodsDetailSelects.get(i).getColoR_NAME().equals(colorSelect)&&goodsDetailSelects.get(i).getSpeC_NAME().equals(sizeSelect)) {
+                goodsDetailSelectNow = goodsDetailSelects.get(i);
+                break;
+            }
+        }
+        setData(goodsDetailSelectNow);
+    }
+
+    /**
+     * 根据texview ,清除颜色或尺寸的选中状态
+     * @param v
+     */
+    private void clearState(View v) {
+        ViewGroup parent = (ViewGroup) v.getParent();
+        //得到顶层parent
+        ViewGroup parentTop = (ViewGroup) parent.getParent();
+        //遍历清除state
+        int parentTopChildCount = parentTop.getChildCount();
+        for (int j = 0; j < parentTopChildCount; j++) {
+            //每一行的viewGroup
+            ViewGroup childAt = (ViewGroup) parentTop.getChildAt(j);
+            int childCount = childAt.getChildCount();
+            for (int i = 0; i < childCount; i++) {
+                //每一个textView
+                childAt.getChildAt(i).setSelected(false);
             }
         }
     }

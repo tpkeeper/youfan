@@ -6,54 +6,61 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.tk.youfan.view.MySlideDetails
-        android:id="@+id/slidedetails"
+    <LinearLayout
+        android:id="@+id/lin_top"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        app:default_panel="front"
-        app:duration="300"
-        app:percent="0.2">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <include
-            android:id="@+id/goods_detail_front"
-            layout="@layout/goods_detail_front"></include>
 
-        <include layout="@layout/goods_detail_foot"></include>
+        <com.tk.youfan.view.MySlideDetails
+            android:id="@+id/slidedetails"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            app:default_panel="front"
+            app:duration="300"
+            app:percent="0.2">
 
-    </com.tk.youfan.view.MySlideDetails>
+            <include
+                android:id="@+id/goods_detail_front"
+                layout="@layout/goods_detail_front"></include>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp">
+            <include layout="@layout/goods_detail_foot"></include>
 
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/icon_shopping_bag" />
+        </com.tk.youfan.view.MySlideDetails>
 
-        <Button
-            android:id="@+id/btn_purchase_bag"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_centerInParent="true"
-            android:background="@drawable/btn_purchase_bag_bg_selector"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:text="加入购物袋"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
 
-        <ImageView
-            android:id="@+id/img_collect"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:src="@drawable/icon_collect_selector" />
-    </RelativeLayout>
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/icon_shopping_bag" />
 
+            <Button
+                android:id="@+id/btn_purchase_bag"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/btn_purchase_bag_bg_selector"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:text="加入购物袋"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/img_collect"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/icon_collect_selector" />
+        </RelativeLayout>
+    </LinearLayout>
 </LinearLayout>
