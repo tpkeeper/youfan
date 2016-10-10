@@ -5,6 +5,8 @@ import android.os.Build;
 
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechUtility;
+import com.tk.youfan.db.DBManager;
+import com.tk.youfan.db.Model;
 import com.tk.youfan.utils.LogUtil;
 import com.tk.youfan.utils.loadingandretry.LoadingAndRetryManager;
 
@@ -24,5 +26,11 @@ public class MyApplication extends Application {
         LoadingAndRetryManager.BASE_RETRY_LAYOUT_ID = R.layout.base_retry;
         LoadingAndRetryManager.BASE_LOADING_LAYOUT_ID = R.layout.base_loading;
         LoadingAndRetryManager.BASE_EMPTY_LAYOUT_ID = R.layout.base_empty;
+
+        initDB();
+    }
+
+    private void initDB() {
+        Model.getInstance().init(this,"tk");
     }
 }

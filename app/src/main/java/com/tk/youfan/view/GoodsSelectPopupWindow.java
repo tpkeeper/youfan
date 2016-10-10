@@ -21,7 +21,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
 import com.tk.youfan.R;
+import com.tk.youfan.dao.GoodsDao;
+import com.tk.youfan.db.Model;
 import com.tk.youfan.domain.goodsdetail.GoodsDetailSelect;
+import com.tk.youfan.domain.purchase.Goods;
 import com.tk.youfan.utils.LogUtil;
 import com.tk.youfan.utils.ScreenUtils;
 import com.tk.youfan.utils.UrlContants;
@@ -108,6 +111,9 @@ public class GoodsSelectPopupWindow extends PopupWindow {
         // 设置弹出窗体显示时的动画，从底部向上弹出
         this.setAnimationStyle(R.style.pop_goods_select);
         initData();
+
+
+
     }
 
     private void initListener() {
@@ -135,6 +141,13 @@ public class GoodsSelectPopupWindow extends PopupWindow {
         btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                GoodsDao goodsDao = Model.getInstance().getDbManager().getGoodsDao();
+                Goods goods = new Goods();
+                goods.setId(goodsDetailSelectNow.getId());
+                goods.setProdClsNum(goodsDetailSelectNow.getProD_CLS_NUM());
+                goods.setLmProdClsId(goodsDetailSelectNow.getLM_PROD_CLS_ID());
+                goods.setCount(autoSubAdd.getValue());
+                goodsDao.saveGoods(goods);
                 Toast.makeText(mContext,"已经加入购物车",Toast.LENGTH_SHORT).show();
                 dismiss();
             }
@@ -257,7 +270,7 @@ public class GoodsSelectPopupWindow extends PopupWindow {
     }
 
     private void setData(GoodsDetailSelect goodsDetailSelect) {
-
+        goodsDetailSelectNow = goodsDetailSelect;
         //当前图片
         String coloR_file_path = goodsDetailSelect.getColoR_FILE_PATH();
         //当前颜色
@@ -268,7 +281,7 @@ public class GoodsSelectPopupWindow extends PopupWindow {
         sizeSelect = speC_name;
 
         //设置加减
-        autoSubAdd.setValue(1);
+        autoSubAdd.setValue(0);
         autoSubAdd.setMaxValue(goodsDetailSelect.getLisT_QTY());
         //填充图片 价格，编号
         Glide.with(mContext)

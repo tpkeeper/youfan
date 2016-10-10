@@ -29,7 +29,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tk.youfan.R;
 import com.tk.youfan.base.BaseFragment;
+import com.tk.youfan.dao.GoodsDao;
+import com.tk.youfan.db.Model;
 import com.tk.youfan.domain.goodsdetail.GoodsDetail;
+import com.tk.youfan.domain.purchase.Goods;
 import com.tk.youfan.fragment.goodsdetail.AskFragment;
 import com.tk.youfan.fragment.goodsdetail.GoodsDetailFragment;
 import com.tk.youfan.fragment.goodsdetail.ReviewFragment;
@@ -89,6 +92,8 @@ public class GoodsDetailActivity extends FragmentActivity {
     LinearLayout lin_all;
     @Bind(R.id.lin_top)
     LinearLayout lin_top;
+    @Bind(R.id.img_purchase_bag)
+    ImageView img_purchase_bag;
     private GoodsDetail goodsDetail;
     private List<GoodsDetail.ProPicUrlBean> proPicUrlBeanList;
     private int scrollViewHight;
@@ -146,6 +151,21 @@ public class GoodsDetailActivity extends FragmentActivity {
             public void onClick(View v) {
                 GoodsSelectPopupWindow goodsSelectPopupWindow= new GoodsSelectPopupWindow(GoodsDetailActivity.this,code);
                 goodsSelectPopupWindow.showAsDropDown(lin_all,0, (int) (-ScreenUtils.getScreenHeight(GoodsDetailActivity.this)*0.7));
+            }
+        });
+        img_purchase_bag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GoodsDao goodsDao = Model.getInstance().getDbManager().getGoodsDao();
+                List<Goods> goodsList = goodsDao.getGoodsList();
+                if(goodsList==null) {
+                    LogUtil.e("nullllll");
+                }else {
+                    LogUtil.e("dbsize:"+goodsList.size());
+                    for (Goods goods : goodsList) {
+                        LogUtil.e(goods.toString());
+                    }
+                }
             }
         });
     }
