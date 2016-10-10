@@ -30,4 +30,9 @@
         <item name="android:windowExitAnimation">@anim/popwindow_brand_exit_anim</item>
     </style>
 
+    <style name="pop_goods_select">
+        <item name="android:windowEnterAnimation">@anim/popwindow_goods_select_enter_anim</item>
+        <item name="android:windowExitAnimation">@anim/popwindow_goods_select_exit_anim</item>
+    </style>
+
 </resources>

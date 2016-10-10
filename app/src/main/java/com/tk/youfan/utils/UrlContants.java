@@ -152,4 +152,8 @@ public class UrlContants {
 
 //商品列表
 //    http://api.funwear.com/mbfun_server/index.php?m=Product&a=ProductClsCommonSearchFilter&osMode=genymotion4.2.2&osCode=android&cid=1&pageIndex=1&useNewSearchEngine=1&osVersion=17&deviceId=ffffffff-e6e7-d772-ffff-ffff99d603a9&token=395d4f778969d0f1258b33f66656dc2a&version=v4.2.5&CategoryId=rjkk&osName=genymotion4.2.2&source=android&sortInfo=%7B%22desc%22%3A0%2C%22sortField%22%3A3%7D&inStock=1&pageSize=20&appName=youfanguanfang
+
+    //点击加入购物车选择样式
+    public static final String GOODS_DETAIL_SELECT_PRE = "http://api.funwear.com/mbfun_server/index.php?m=Product&a=ProductFilter&osMode=genymotion4.2.2&osCode=android&cid=1&osVersion=17&deviceId=ffffffff-e6e7-d772-ffff-ffff99d603a9&token=395d4f778969d0f1258b33f66656dc2a&version=v4.2.5&osName=genymotion4.2.2&prodClsIdList=";
+    public static final String GOODS_DETAIL_SELECT_TAIL = "&source=android&appName=youfanguanfang";
 }

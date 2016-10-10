@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -32,7 +33,9 @@ import com.tk.youfan.fragment.goodsdetail.AskFragment;
 import com.tk.youfan.fragment.goodsdetail.GoodsDetailFragment;
 import com.tk.youfan.fragment.goodsdetail.ReviewFragment;
 import com.tk.youfan.utils.LogUtil;
+import com.tk.youfan.utils.ScreenUtils;
 import com.tk.youfan.utils.UrlContants;
+import com.tk.youfan.view.GoodsSelectPopupWindow;
 import com.tk.youfan.view.MySlideDetails;
 import com.tk.youfan.view.ObservableScrollView;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -79,11 +82,14 @@ public class GoodsDetailActivity extends FragmentActivity {
     ObservableScrollView observable_scrollview;
     @Bind(R.id.viewpager_content)
     ViewPager viewpager_content;
+    @Bind(R.id.lin_all)
+    LinearLayout lin_all;
     private GoodsDetail goodsDetail;
     private List<GoodsDetail.ProPicUrlBean> proPicUrlBeanList;
     private int scrollViewHight;
     private int contentViewHight;
     private List<BaseFragment> baseFragmentList;
+    private String code;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,9 +97,20 @@ public class GoodsDetailActivity extends FragmentActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_goods_detail);
         ButterKnife.bind(this);
-
-
+        //获取goods的Code
+        code = getIntent().getStringExtra("code");
+        initListener();
         getDataFromNet();
+    }
+
+    private void initListener() {
+        btnPurchaseBag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GoodsSelectPopupWindow goodsSelectPopupWindow= new GoodsSelectPopupWindow(GoodsDetailActivity.this,code);
+                goodsSelectPopupWindow.showAsDropDown(lin_all,0, (int) (-ScreenUtils.getScreenHeight(GoodsDetailActivity.this)*0.7));
+            }
+        });
     }
 
     private void debugScroll() {
@@ -115,7 +132,6 @@ public class GoodsDetailActivity extends FragmentActivity {
     }
 
     private void getDataFromNet() {
-        String code = getIntent().getStringExtra("code");
         String url = UrlContants.GOODS_DETAIL_PRE + code + UrlContants.GOODS_DETAIL_TAIL;
         OkHttpUtils.get()
                 .url(url)
