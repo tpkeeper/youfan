@@ -36,4 +36,6 @@ dependencies {
     compile project(':SmartTabLayout_library')
     compile project(':quicksidebar')
     compile project(':LoadingDrawablelibrary')
+    compile project(':SlideDetailsLayoutlibrary')
+    compile project(':PhotoView_library')
 }

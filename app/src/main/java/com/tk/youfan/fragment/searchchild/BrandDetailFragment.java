@@ -37,6 +37,9 @@ public class BrandDetailFragment extends BaseFragment {
     private List<BrandDetailResult> brandDetailResultList;
     private LoadingAndRetryManager mloadingAndRetryManager;
 
+    public BrandDetailFragment() {
+    }
+
     public BrandDetailFragment(String url) {
         this.url = url;
     }

@@ -6,12 +6,15 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -73,6 +76,12 @@ public class BrandDetailActivity extends FragmentActivity implements ObservableS
     SmartTabLayout smartTablayout;
     @Bind(R.id.tv_select)
     TextView tvSelect;
+    @Bind(R.id.drawerlayout)
+    DrawerLayout drawerLayout;
+    @Bind(R.id.recyclerview_drawer)
+    RecyclerView recyclerview_drawer;
+    @Bind(R.id.drawer_side)
+    FrameLayout drawer_side;
     private String url;
     private BrandStory brandStory;
     private List<BaseFragment> baseFragmentList;
@@ -120,7 +129,7 @@ public class BrandDetailActivity extends FragmentActivity implements ObservableS
         tvSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                    drawerLayout.openDrawer(drawer_side);
             }
         });
 
@@ -202,8 +211,8 @@ public class BrandDetailActivity extends FragmentActivity implements ObservableS
     private void initViewPager() {
         baseFragmentList = new ArrayList<>();
         String brand_code = brandStory.getBrand_code();
-        String urlNewHot = UrlContants.BRANDDETAIL_PRE+ brand_code +UrlContants.BRANDDETAIL_TAIL;
-        String urlPrice = UrlContants.BRANDDETAIL_PRICE_PRE+brand_code+UrlContants.BRANDDETAIL_TAIL;
+        String urlNewHot = UrlContants.BRANDDETAIL_PRE + brand_code + UrlContants.BRANDDETAIL_TAIL;
+        String urlPrice = UrlContants.BRANDDETAIL_PRICE_PRE + brand_code + UrlContants.BRANDDETAIL_TAIL;
         baseFragmentList.add(new BrandDetailFragment(urlNewHot));
         baseFragmentList.add(new BrandDetailFragment(urlNewHot));
         baseFragmentList.add(new BrandDetailFragment(urlPrice));

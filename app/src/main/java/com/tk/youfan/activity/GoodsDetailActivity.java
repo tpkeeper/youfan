@@ -1,17 +1,24 @@
 package com.tk.youfan.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Paint;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
@@ -19,21 +26,28 @@ import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tk.youfan.R;
+import com.tk.youfan.base.BaseFragment;
 import com.tk.youfan.domain.goodsdetail.GoodsDetail;
+import com.tk.youfan.fragment.goodsdetail.AskFragment;
+import com.tk.youfan.fragment.goodsdetail.GoodsDetailFragment;
+import com.tk.youfan.fragment.goodsdetail.ReviewFragment;
 import com.tk.youfan.utils.LogUtil;
 import com.tk.youfan.utils.UrlContants;
+import com.tk.youfan.view.MySlideDetails;
+import com.tk.youfan.view.ObservableScrollView;
 import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.Callback;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.bleu.widget.slidedetails.SlideDetailsLayout;
 import okhttp3.Call;
 
-public class GoodsDetailActivity extends Activity {
+public class GoodsDetailActivity extends FragmentActivity {
 
     @Bind(R.id.viewpager)
     ViewPager viewpager;
@@ -53,8 +67,23 @@ public class GoodsDetailActivity extends Activity {
     Button btnPurchaseBag;
     @Bind(R.id.img_collect)
     ImageView imgCollect;
+    @Bind(R.id.lin_activity)
+    LinearLayout lin_activity;
+    @Bind(R.id.slidedetails)
+    MySlideDetails slidedetails;
+    @Bind(R.id.img_brand_dispatch)
+    ImageView img_brand_dispatch;
+    @Bind(R.id.tv_show_bottom)
+    TextView tv_show_bottom;
+    @Bind(R.id.observable_scrollview)
+    ObservableScrollView observable_scrollview;
+    @Bind(R.id.viewpager_content)
+    ViewPager viewpager_content;
     private GoodsDetail goodsDetail;
     private List<GoodsDetail.ProPicUrlBean> proPicUrlBeanList;
+    private int scrollViewHight;
+    private int contentViewHight;
+    private List<BaseFragment> baseFragmentList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,12 +91,32 @@ public class GoodsDetailActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_goods_detail);
         ButterKnife.bind(this);
+
+
         getDataFromNet();
+    }
+
+    private void debugScroll() {
+        super.onResume();
+        View parentView = (View) observable_scrollview.getParent();
+        int parentViewHight = parentView.getBottom() - parentView.getTop();
+        //解决scrollView内容少不能滑动响应的情况
+        scrollViewHight = observable_scrollview.getBottom() - observable_scrollview.getTop();
+        View contentView = observable_scrollview.getChildAt(0);
+        contentViewHight = contentView.getBottom() - contentView.getTop();
+        //解决slidingDetailsLayout嵌套scrollView不能滑动的问题
+
+        if (parentViewHight > scrollViewHight) {
+            //如果scrollView中的内容较少就直接设置为不能滑动
+            slidedetails.setChildCanScroll(false);
+        }
+        observable_scrollview.setCallbacks(new myScrollCallBack());
+
     }
 
     private void getDataFromNet() {
         String code = getIntent().getStringExtra("code");
-        String url = UrlContants.GOODS_DETAIL_PRE+code+UrlContants.GOODS_DETAIL_TAIL;
+        String url = UrlContants.GOODS_DETAIL_PRE + code + UrlContants.GOODS_DETAIL_TAIL;
         OkHttpUtils.get()
                 .url(url)
                 .build()
@@ -96,7 +145,7 @@ public class GoodsDetailActivity extends Activity {
 
         @Override
         public void onResponse(String response, int id) {
-            if(TextUtils.isEmpty(response)) {
+            if (TextUtils.isEmpty(response)) {
                 LogUtil.e("response is null in goodsdetailactivity");
                 return;
             }
@@ -114,11 +163,47 @@ public class GoodsDetailActivity extends Activity {
 
     private void initData() {
         tvShowName.setText(goodsDetail.getClsInfo().getShowName());
-        tvSalePrice.setText("￥"+goodsDetail.getClsInfo().getSale_price());
-        tvMarketPrice.setText("￥"+goodsDetail.getClsInfo().getMarketPrice());
-        tvMarketPrice.getPaint().setFlags(Paint. STRIKE_THRU_TEXT_FLAG );
-        tvIndicate.setText((1)+"/"+proPicUrlBeanList.size());
+        tvSalePrice.setText("￥" + goodsDetail.getClsInfo().getSale_price());
+        tvMarketPrice.setText("￥" + goodsDetail.getClsInfo().getMarketPrice());
+        tvMarketPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+        tvIndicate.setText((1) + "/" + proPicUrlBeanList.size());
+        List<GoodsDetail.ActivityBean> activityList = goodsDetail.getActivity();
+        for (int i = 0; i < activityList.size(); i++) {
+            View view = LayoutInflater.from(this).inflate(R.layout.item_goods_detail_activity, null);
+            ImageView imageView = (ImageView) view.findViewById(R.id.img_activity1);
+            TextView textView = (TextView) view.findViewById(R.id.tv_activity_name1);
+
+            Glide.with(this)
+                    .load(activityList.get(i).getUrl())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(imageView);
+            textView.setText(activityList.get(i).getName());
+            lin_activity.addView(view);
+        }
+        Glide.with(this)
+                .load("http://metersbonwe.qiniucdn.com/youfanchengnuo_shangjia.png")
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(img_brand_dispatch);
+        img_brand_dispatch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(GoodsDetailActivity.this, JumpActivity.class);
+                intent.putExtra("url", "http://m.funwear.com/wx/?p=4427&a=");
+                intent.putExtra("title_later", "用户协议");
+                GoodsDetailActivity.this.startActivity(intent);
+            }
+        });
         initViewPager();
+
+        //放在数据填充之后不然测量的不准确
+        debugScroll();
+
+        //初始化第二个页面
+        baseFragmentList = new ArrayList<>();
+        baseFragmentList.add(new GoodsDetailFragment(goodsDetail,slidedetails));
+        baseFragmentList.add(new ReviewFragment(goodsDetail,slidedetails));
+        baseFragmentList.add(new AskFragment(goodsDetail,slidedetails));
+        viewpager_content.setAdapter(new MyFragmentAdapter(getSupportFragmentManager()));
     }
 
     private void initViewPager() {
@@ -131,7 +216,7 @@ public class GoodsDetailActivity extends Activity {
 
             @Override
             public void onPageSelected(int position) {
-                tvIndicate.setText((position+1)+"/"+proPicUrlBeanList.size());
+                tvIndicate.setText((position + 1) + "/" + proPicUrlBeanList.size());
             }
 
             @Override
@@ -144,7 +229,7 @@ public class GoodsDetailActivity extends Activity {
     private class MyViewPagerAdapter extends PagerAdapter {
         @Override
         public int getCount() {
-            return proPicUrlBeanList == null ?0:proPicUrlBeanList.size();
+            return proPicUrlBeanList == null ? 0 : proPicUrlBeanList.size();
         }
 
         @Override
@@ -154,19 +239,59 @@ public class GoodsDetailActivity extends Activity {
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            ImageView imageView = new ImageView(GoodsDetailActivity.this);
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            View view = LayoutInflater.from(GoodsDetailActivity.this).inflate(R.layout.item_googds_detail_img, null);
+            ImageView img_goods_detail = (ImageView) view.findViewById(R.id.img_goods_detail);
             Glide.with(GoodsDetailActivity.this)
                     .load(proPicUrlBeanList.get(position).getFilE_PATH())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(imageView);
-            container.addView(imageView);
-            return imageView;
+                    .into(img_goods_detail);
+            container.addView(view);
+            return view;
         }
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeViewAt(position);
+            if (container != null) {
+                container.removeViewAt(position);
+            }
+        }
+    }
+
+    private class myScrollCallBack implements ObservableScrollView.Callbacks {
+        @Override
+        public void onScrollChanged(int scrollY) {
+            scrollViewHight = observable_scrollview.getBottom() - observable_scrollview.getTop();
+            if (scrollY >= contentViewHight - scrollViewHight) {
+                slidedetails.setChildCanScroll(false);
+            } else {
+                slidedetails.setChildCanScroll(true);
+            }
+        }
+
+        @Override
+        public void onDownMotionEvent() {
+
+        }
+
+        @Override
+        public void onUpOrCancelMotionEvent() {
+
+        }
+    }
+
+    private class MyFragmentAdapter extends FragmentPagerAdapter {
+        public MyFragmentAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return baseFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return baseFragmentList == null ? 0 : baseFragmentList.size();
         }
     }
 }

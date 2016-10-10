@@ -1,1 +1,1 @@
-include ':app', ':SlidingMenu_library', ':okhttputils', ':MaterialRefreshLayout_library', ':SmartTabLayout_library', ':quicksidebar', ':LoadingDrawablelibrary'
+include ':app', ':SlidingMenu_library', ':okhttputils', ':MaterialRefreshLayout_library', ':SmartTabLayout_library', ':quicksidebar', ':LoadingDrawablelibrary', ':SlideDetailsLayoutlibrary', ':PhotoView_library'

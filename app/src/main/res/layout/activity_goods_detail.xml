@@ -1,91 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <com.tk.youfan.view.MySlideDetails
+        android:id="@+id/slidedetails"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        app:default_panel="front"
+        app:duration="300"
+        app:percent="0.2">
+        <include
+            android:id="@+id/goods_detail_front"
+            layout="@layout/goods_detail_front"></include>
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
+        <include layout="@layout/goods_detail_foot"></include>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:orientation="vertical"
-                android:layout_height="match_parent">
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="300dp">
-                <android.support.v4.view.ViewPager
-                    android:id="@+id/viewpager"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                </android.support.v4.view.ViewPager>
-                <TextView
-                    android:id="@+id/tv_indicate"
-                    android:layout_width="35dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:gravity="center"
-                    android:layout_alignParentBottom="true"
-                    android:background="@drawable/tv_incicate_reac_bg"
-                    android:layout_alignParentRight="true"
-                    android:layout_height="20dp" />
-            </RelativeLayout>
-                <TextView
-                    android:id="@+id/tv_show_name"
-                    android:layout_width="match_parent"
-                    android:textSize="20sp"
-                    android:paddingLeft="10dp"
-                    android:gravity="center_vertical"
-                    android:layout_height="40dp" />
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:orientation="horizontal"
-                    android:layout_height="50dp">
-                    <TextView
-                        android:id="@+id/tv_sale_price"
-                        android:layout_width="wrap_content"
-                        android:textSize="30sp"
-                        android:gravity="center_vertical"
-                        android:layout_marginLeft="10dp"
-                        android:layout_height="wrap_content" />
-                    <TextView
-                        android:id="@+id/tv_market_price"
-                        android:layout_width="wrap_content"
-                        android:textSize="13sp"
-                        android:layout_marginLeft="15sp"
-                        android:gravity="center_vertical"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-            </LinearLayout>
-        </ScrollView>
-
-        <ImageView
-            android:id="@+id/img_back"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:background="@android:color/transparent"
-            android:src="@drawable/top_back" />
-
-        <ImageView
-            android:id="@+id/img_share"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_alignParentRight="true"
-            android:background="@android:color/transparent"
-            android:src="@drawable/top_share" />
-
-    </RelativeLayout>
+    </com.tk.youfan.view.MySlideDetails>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -119,4 +53,5 @@
             android:layout_marginRight="10dp"
             android:src="@drawable/icon_collect_selector" />
     </RelativeLayout>
+
 </LinearLayout>

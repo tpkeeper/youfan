@@ -7,9 +7,8 @@
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="match_parent"
-        android:background="#555"
+        android:background="#000000"
         android:layout_height="wrap_content"
-        android:text="xxx"
         android:paddingLeft="5dp"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp"

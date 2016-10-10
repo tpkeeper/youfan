@@ -119,7 +119,7 @@ public class MyBrandPopupWindow extends PopupWindow implements OnQuickSideBarTou
         this.setFocusable(true);
 
         // 实例化一个ColorDrawable颜色为半透明
-        ColorDrawable dw = new ColorDrawable(0xd0000000);
+        ColorDrawable dw = new ColorDrawable(0xd04F4F4F);
         // 设置弹出窗体的背景
         this.setBackgroundDrawable(dw);
 

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tk.youfan.view.ObservableScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/observable_scrollview_foot"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:id="@+id/lin_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+    </LinearLayout>
+</com.tk.youfan.view.ObservableScrollView>
