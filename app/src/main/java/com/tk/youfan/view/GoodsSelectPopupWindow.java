@@ -281,7 +281,7 @@ public class GoodsSelectPopupWindow extends PopupWindow {
         sizeSelect = speC_name;
 
         //设置加减
-        autoSubAdd.setValue(0);
+        autoSubAdd.setValue(1);
         autoSubAdd.setMaxValue(goodsDetailSelect.getLisT_QTY());
         //填充图片 价格，编号
         Glide.with(mContext)

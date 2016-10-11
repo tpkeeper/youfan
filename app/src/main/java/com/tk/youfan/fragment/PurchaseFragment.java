@@ -89,6 +89,7 @@ public class PurchaseFragment extends BaseFragment {
     boolean isSelectAll = false;
     List<Goods> goodsListSelect = new ArrayList<>();
     HashMap<String, GoodsDetailSelect> goodsDetailSelectMap = new HashMap<>();
+    boolean isFirst = true;
 
     @Override
     public View initView() {
@@ -154,7 +155,7 @@ public class PurchaseFragment extends BaseFragment {
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (goodsListSelect == null||goodsListSelect.size()<=0) {
+                if (goodsListSelect == null || goodsListSelect.size() <= 0) {
                     Toast.makeText(mContext, "还没有选中商品", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -166,7 +167,7 @@ public class PurchaseFragment extends BaseFragment {
                 }
                 goodsListSelect.clear();
                 adapter.notifyDataSetChanged();
-                Toast.makeText(mContext,"已经删除选中商品",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "已经删除选中商品", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -257,7 +258,11 @@ public class PurchaseFragment extends BaseFragment {
         LinearLayoutManager linearLayout = new LinearLayoutManager(mContext);
         recyclerview.setAdapter(adapter);
         recyclerview.setLayoutManager(linearLayout);
-        recyclerview.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL_LIST));
+        if (isFirst) {
+            DividerItemDecoration decor = new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL_LIST);
+            recyclerview.addItemDecoration(decor);
+            isFirst = false;
+        }
     }
 
 
@@ -374,6 +379,42 @@ public class PurchaseFragment extends BaseFragment {
             tv_count.setText("X" + goods.getCount());
             auto_sub_add.setValue(goods.getCount());
             auto_sub_add.setMaxValue(goodsDetailSelect.getLisT_QTY());
+            auto_sub_add.setClickListener(new AutoSubAdd.onAddAndSubClickListener() {
+                @Override
+                public void onAddClick(int value) {
+                    if (value >= auto_sub_add.getMaxValue()) {
+                        Toast.makeText(mContext, "被你购完了", Toast.LENGTH_SHORT).show();
+                    }
+                    //更新数目
+                    tv_count.setText("X" + value);
+                    goods.setCount(value);
+                    //更新goodsList
+                    goodsList.get(goodsList.indexOf(goods)).setCount(value);
+                    //更新goodsListSelect
+                    if (goodsListSelect.contains(goods)) {
+                        goodsListSelect.get(goodsListSelect.indexOf(goods)).setCount(value);
+                        updateMony();
+                    }
+                    //更新数据库
+                    goodsDao.updateGoods(goods);
+                }
+
+                @Override
+                public void onSubClick(int value) {
+                    //更新数目
+                    tv_count.setText("X" + value);
+                    goods.setCount(value);
+                    //更新goodsList
+                    goodsList.get(goodsList.indexOf(goods)).setCount(value);
+                    //更新goodsListSelect
+                    if (goodsListSelect.contains(goods)) {
+                        goodsListSelect.get(goodsListSelect.indexOf(goods)).setCount(value);
+                        updateMony();
+                    }
+                    //更新数据库
+                    goodsDao.updateGoods(goods);
+                }
+            });
 
             checkbox.setChecked(goodsListSelect.contains(goods));
             checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

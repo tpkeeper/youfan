@@ -262,6 +262,10 @@ public class MainActivity extends SlidingFragmentActivity {
                 .hide(hideFragment)
                 .show(showFragment)
                 .commit();
+        if(showFragment instanceof PurchaseFragment) {
+            //刷新
+            ((PurchaseFragment) showFragment).initData(null);
+        }
     }
 
     @Override

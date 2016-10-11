@@ -168,6 +168,13 @@ public class GoodsDetailActivity extends FragmentActivity {
                 }
             }
         });
+        img_purchase_bag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(GoodsDetailActivity.this,ShoppingCarActivity.class);
+                GoodsDetailActivity.this.startActivity(intent);
+            }
+        });
     }
 
     private void debugScroll() {
