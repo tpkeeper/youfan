@@ -1,6 +1,7 @@
 package com.tk.youfan.fragment;
 
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,10 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -29,6 +32,8 @@ import com.tk.youfan.domain.home.Module;
 import com.tk.youfan.domain.purchase.Goods;
 import com.tk.youfan.utils.LogUtil;
 import com.tk.youfan.utils.UrlContants;
+import com.tk.youfan.utils.loadingandretry.LoadingAndRetryManager;
+import com.tk.youfan.utils.loadingandretry.OnLoadingAndRetryListener;
 import com.tk.youfan.view.AutoSubAdd;
 import com.tk.youfan.view.DividerItemDecoration;
 import com.tk.youfan.view.MyRecycleView;
@@ -36,6 +41,8 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.Callback;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.Bind;
@@ -49,6 +56,7 @@ import okhttp3.Call;
  * 作用：xxxx
  */
 public class PurchaseFragment extends BaseFragment {
+    private LoadingAndRetryManager mloadingAndRetryManager = null;
     private static final int EDIT = 0;
     private static final int SHOW = 1;
     int state = SHOW;
@@ -77,6 +85,10 @@ public class PurchaseFragment extends BaseFragment {
     private List<Goods> goodsList;
     private List<GoodsDetailSelect> goodsDetailSelects;
     private RecyclerView.Adapter adapter;
+    List<String> urlList = new ArrayList<>();
+    boolean isSelectAll = false;
+    List<Goods> goodsListSelect = new ArrayList<>();
+    HashMap<String, GoodsDetailSelect> goodsDetailSelectMap = new HashMap<>();
 
     @Override
     public View initView() {
@@ -100,6 +112,63 @@ public class PurchaseFragment extends BaseFragment {
                 changeView();
             }
         });
+        //当其他事件导致checkedchang时，该监听也会起作用
+//        checkboxAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (isChecked) {
+//                    //加入全部数据
+//                    goodsListSelect.clear();
+//                    goodsListSelect.addAll(goodsList);
+//                    //更新列表
+//                    adapter.notifyDataSetChanged();
+////                    更新mony
+//                    updateMony();
+//                } else {
+//                    goodsListSelect.clear();
+//                    adapter.notifyDataSetChanged();
+//                    updateMony();
+//                }
+//            }
+//        });
+
+        checkboxAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean checked = checkboxAll.isChecked();
+                if (checked) {
+                    //加入全部数据
+                    goodsListSelect.clear();
+                    goodsListSelect.addAll(goodsList);
+                    //更新列表
+                    adapter.notifyDataSetChanged();
+//                    更新mony
+                    updateMony();
+                } else {
+                    goodsListSelect.clear();
+                    adapter.notifyDataSetChanged();
+                    updateMony();
+                }
+            }
+        });
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (goodsListSelect == null||goodsListSelect.size()<=0) {
+                    Toast.makeText(mContext, "还没有选中商品", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                for (int i = 0; i < goodsListSelect.size(); i++) {
+                    Goods goods = goodsListSelect.get(i);
+                    goodsDao.deleteById(goods.getId());
+                    goodsList.remove(goods);
+                    goodsDetailSelectMap.remove(goods.getId());
+                }
+                goodsListSelect.clear();
+                adapter.notifyDataSetChanged();
+                Toast.makeText(mContext,"已经删除选中商品",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void changeView() {
@@ -121,26 +190,24 @@ public class PurchaseFragment extends BaseFragment {
 //        updateRecyclerItem();
     }
 
-    private void updateRecyclerItem() {
-        int childCount = recyclerview.getChildCount();
-        LogUtil.e("childcount"+childCount);
-        if (state == EDIT) {
-            for (int i = 0; i < childCount; i++) {
-                LogUtil.e("item:"+i);
-                recyclerview.getChildAt(i).findViewById(R.id.auto_sub_add).setVisibility(View.VISIBLE);
-                recyclerview.getChildAt(i).findViewById(R.id.rel_price).setVisibility(View.INVISIBLE);
-                recyclerview.getChildAt(i).findViewById(R.id.tv_brand).setVisibility(View.INVISIBLE);
-                recyclerview.getChildAt(i).findViewById(R.id.tv_name).setVisibility(View.INVISIBLE);
-            }
-        }else {
-            for (int i = 0; i < childCount; i++) {
-                recyclerview.getChildAt(i).findViewById(R.id.auto_sub_add).setVisibility(View.INVISIBLE);
-                recyclerview.getChildAt(i).findViewById(R.id.rel_price).setVisibility(View.VISIBLE);
-                recyclerview.getChildAt(i).findViewById(R.id.tv_brand).setVisibility(View.VISIBLE);
-                recyclerview.getChildAt(i).findViewById(R.id.tv_name).setVisibility(View.VISIBLE);
-            }
-        }
-    }
+//    private void updateRecyclerItem() {
+//        int childCount = recyclerview.getChildCount();
+//        if (state == EDIT) {
+//            for (int i = 0; i < childCount; i++) {
+//                recyclerview.getChildAt(i).findViewById(R.id.auto_sub_add).setVisibility(View.VISIBLE);
+//                recyclerview.getChildAt(i).findViewById(R.id.rel_price).setVisibility(View.INVISIBLE);
+//                recyclerview.getChildAt(i).findViewById(R.id.tv_brand).setVisibility(View.INVISIBLE);
+//                recyclerview.getChildAt(i).findViewById(R.id.tv_name).setVisibility(View.INVISIBLE);
+//            }
+//        }else {
+//            for (int i = 0; i < childCount; i++) {
+//                recyclerview.getChildAt(i).findViewById(R.id.auto_sub_add).setVisibility(View.INVISIBLE);
+//                recyclerview.getChildAt(i).findViewById(R.id.rel_price).setVisibility(View.VISIBLE);
+//                recyclerview.getChildAt(i).findViewById(R.id.tv_brand).setVisibility(View.VISIBLE);
+//                recyclerview.getChildAt(i).findViewById(R.id.tv_name).setVisibility(View.VISIBLE);
+//            }
+//        }
+//    }
 
     @Override
     public void initData(Bundle savedInstanceState) {
@@ -150,7 +217,39 @@ public class PurchaseFragment extends BaseFragment {
         if (goodsList == null || goodsList.size() <= 0) {
             return;
         }
-        initrecyclerView();
+
+        mloadingAndRetryManager = new LoadingAndRetryManager(recyclerview, new OnLoadingAndRetryListener() {
+            @Override
+            public void setRetryEvent(View retryView) {
+
+                PurchaseFragment.this.setRetryEvent(retryView);
+            }
+
+            //重写加载动画
+            @Override
+            public View generateLoadingLayout() {
+                ImageView imageView = new ImageView(mContext);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                imageView.setImageResource(R.drawable.loadingicons);
+                AnimationDrawable animationDrawable = (AnimationDrawable) imageView.getDrawable();
+                animationDrawable.start();
+                return imageView;
+            }
+        });
+        mloadingAndRetryManager.showLoading();
+        getAllGoodsSelectedDataFromNet();
+
+    }
+
+    private void setRetryEvent(View retryView) {
+        View view = retryView.findViewById(R.id.id_btn_retry);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mloadingAndRetryManager.showLoading();
+                getAllGoodsSelectedDataFromNet();
+            }
+        });
     }
 
     private void initrecyclerView() {
@@ -171,14 +270,12 @@ public class PurchaseFragment extends BaseFragment {
     private class MyRecycleViewAdapter extends RecyclerView.Adapter<BaseHolder> {
         @Override
         public BaseHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            LogUtil.e("viewType"+viewType);
             View view = LayoutInflater.from(mContext).inflate(R.layout.item_purchase, parent, false);
             return new MyBaseHolder(mContext, view);
         }
 
         @Override
         public void onBindViewHolder(BaseHolder holder, int position) {
-            LogUtil.e("bind data"+position);
             ((MyBaseHolder) holder).setItemData(goodsList.get(position));
         }
 
@@ -189,7 +286,6 @@ public class PurchaseFragment extends BaseFragment {
 
         @Override
         public long getItemId(int position) {
-            LogUtil.e("itemid"+position);
             return super.getItemId(position);
         }
 
@@ -199,7 +295,7 @@ public class PurchaseFragment extends BaseFragment {
             return super.getItemViewType(position);
         }
     }
-int p;
+
     class MyBaseHolder extends BaseHolder {
         CheckBox checkbox;
         ImageView img_purchase;
@@ -212,8 +308,9 @@ int p;
         Goods goods;
         LinearLayout lin_item;
         RelativeLayout rel_price;
-        private GoodsDetailSelect goodsDetailSelect;
+
         AutoSubAdd auto_sub_add;
+
 
         public MyBaseHolder(Context mContext, View itemView) {
             super(mContext, itemView);
@@ -228,7 +325,6 @@ int p;
             tv_price = (TextView) itemView.findViewById(R.id.tv_price);
             tv_count = (TextView) itemView.findViewById(R.id.tv_count);
             lin_item = (LinearLayout) itemView.findViewById(R.id.lin_item);
-            LogUtil.e("new holder"+p++);
         }
 
         @Override
@@ -238,71 +334,142 @@ int p;
 
         public void setItemData(Goods goods) {
             //根据状态设置要显示的view
-            if(state==EDIT) {
+            if (state == EDIT) {
                 tv_brand.setVisibility(View.INVISIBLE);
                 tv_name.setVisibility(View.INVISIBLE);
                 rel_price.setVisibility(View.INVISIBLE);
                 auto_sub_add.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 tv_brand.setVisibility(View.VISIBLE);
                 tv_name.setVisibility(View.VISIBLE);
                 rel_price.setVisibility(View.VISIBLE);
                 auto_sub_add.setVisibility(View.INVISIBLE);
             }
             this.goods = goods;
-            String url = UrlContants.GOODS_DETAIL_SELECT_PRE + goods.getProdClsNum() + UrlContants.GOODS_DETAIL_TAIL;
-            OkHttpUtils.get()
-                    .url(url)
-                    .build()
-                    .execute(new MyStringCb());
-
-        }
-
-        private class MyStringCb extends StringCallback {
-            @Override
-            public void onError(Call call, Exception e, int id) {
-                LogUtil.e("okhttp load data err in purchasefragment ");
-            }
-
-            @Override
-            public void onResponse(String response, int id) {
-                processData(response);
+            if (goodsDetailSelectMap.get(goods.getId()) == null) {
+                //没有缓存
+                LogUtil.e("goods select have no data in loacal !in purchaseFragment ");
+            } else {
+                setGoodsData(goodsDetailSelectMap.get(goods.getId()));
             }
         }
 
-        private void processData(String response) {
-            JSONObject jsonObject = JSON.parseObject(response);
-            String results = jsonObject.getString("results");
-            goodsDetailSelects = JSON.parseArray(results, GoodsDetailSelect.class);
-            if (goodsDetailSelects == null || goodsDetailSelects.size() <= 0) {
-                return;
-            }
-            for (int i = 0; i < goodsDetailSelects.size(); i++) {
-                if (goodsDetailSelects.get(i).getLM_PROD_CLS_ID().equals(goods.getLmProdClsId())) {
-                    goodsDetailSelect = goodsDetailSelects.get(i);
-                    break;
+
+        /**
+         * 为每个条目设置数据
+         *
+         * @param goodsDetailSelect
+         */
+        private void setGoodsData(final GoodsDetailSelect goodsDetailSelect) {
+            Glide.with(mContext)
+                    .load(goodsDetailSelect.getColoR_FILE_PATH())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.drawable.default100)
+                    .into(img_purchase);
+            tv_brand.setText(goodsDetailSelect.getBrand_name());
+            tv_name.setText(goodsDetailSelect.getProD_NAME());
+            tv_color.setText("颜色:" + goodsDetailSelect.getColoR_NAME());
+            tv_size.setText("尺寸:" + goodsDetailSelect.getSpeC_NAME());
+            tv_price.setText("￥" + goodsDetailSelect.getSalE_PRICE());
+            tv_count.setText("X" + goods.getCount());
+            auto_sub_add.setValue(goods.getCount());
+            auto_sub_add.setMaxValue(goodsDetailSelect.getLisT_QTY());
+
+            checkbox.setChecked(goodsListSelect.contains(goods));
+            checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        if (!goodsListSelect.contains(goods)) {
+                            goodsListSelect.add(goods);
+                        }
+                    } else {
+                        goodsListSelect.remove(goods);
+                    }
+                    updateCheckBoxViewState();
+                    updateMony();
                 }
-            }
-            if (goodsDetailSelect != null) {
-                Glide.with(mContext)
-                        .load(goodsDetailSelect.getColoR_FILE_PATH())
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .placeholder(R.drawable.default100)
-                        .into(img_purchase);
-                tv_brand.setText(goodsDetailSelect.getBrand_name());
-                tv_name.setText(goodsDetailSelect.getProD_NAME());
-                tv_color.setText("颜色:" + goodsDetailSelect.getColoR_NAME());
-                tv_size.setText("尺寸:" + goodsDetailSelect.getSpeC_NAME());
-                tv_price.setText("￥" + goodsDetailSelect.getSalE_PRICE());
-                tv_count.setText("X" + goods.getCount());
-                auto_sub_add.setValue(goods.getCount());
-                auto_sub_add.setMaxValue(goodsDetailSelect.getLisT_QTY());
-            }
-
+            });
         }
-
 
     }
 
+    private void updateMony() {
+        int count = 0;
+        for (int i = 0; i < goodsListSelect.size(); i++) {
+            Goods goods = goodsListSelect.get(i);
+            int tempMony = goods.getCount() * goodsDetailSelectMap.get(goods.getId()).getSalE_PRICE();
+            count += tempMony;
+        }
+        tvTotalPrice.setText("合计￥" + count);
+    }
+
+    private void updateCheckBoxViewState() {
+        if (goodsListSelect.size() >= goodsList.size()) {
+            checkboxAll.setChecked(true);
+        } else {
+            checkboxAll.setChecked(false);
+        }
+    }
+
+    private void getAllGoodsSelectedDataFromNet() {
+        for (int i = 0; i < goodsList.size(); i++) {
+            Goods goods = goodsList.get(i);
+            String url = UrlContants.GOODS_DETAIL_SELECT_PRE + goods.getProdClsNum() + UrlContants.GOODS_DETAIL_TAIL;
+            getDataFromNet(url, goods);
+        }
+    }
+
+    public void getDataFromNet(String url, Goods goods) {
+        OkHttpUtils.get()
+                .url(url)
+                .build()
+                .execute(new MyStringCb(goods));
+    }
+
+    private class MyStringCb extends StringCallback {
+        Goods goods;
+
+        public MyStringCb(Goods goods) {
+            this.goods = goods;
+        }
+
+        @Override
+        public void onError(Call call, Exception e, int id) {
+            mloadingAndRetryManager.showRetry();
+            LogUtil.e("okhttp load data err in purchasefragment ");
+        }
+
+        @Override
+        public void onResponse(String response, int id) {
+            processData(response, goods);
+        }
+    }
+
+    private void processData(String response, Goods goods) {
+        JSONObject jsonObject = JSON.parseObject(response);
+        String results = jsonObject.getString("results");
+        goodsDetailSelects = JSON.parseArray(results, GoodsDetailSelect.class);
+        if (goodsDetailSelects == null || goodsDetailSelects.size() <= 0) {
+            return;
+        }
+        GoodsDetailSelect goodsDetailSelect = null;
+        for (int i = 0; i < goodsDetailSelects.size(); i++) {
+            if (goodsDetailSelects.get(i).getLM_PROD_CLS_ID().equals(goods.getLmProdClsId())) {
+                goodsDetailSelect = goodsDetailSelects.get(i);
+                break;
+            }
+        }
+        if (goodsDetailSelect != null) {
+            //缓存数据
+            goodsDetailSelectMap.put(goods.getId(), goodsDetailSelect);
+            //设置数据
+//            setGoodsData(goodsDetailSelect);
+            if (goodsDetailSelectMap.size() >= goodsList.size()) {
+                mloadingAndRetryManager.showContent();
+                initrecyclerView();
+            }
+        }
+    }
 
 }
