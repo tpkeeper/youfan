@@ -263,6 +263,7 @@ public class PurchaseFragment extends BaseFragment {
             recyclerview.addItemDecoration(decor);
             isFirst = false;
         }
+
     }
 
 
@@ -391,6 +392,7 @@ public class PurchaseFragment extends BaseFragment {
                     //更新goodsList
                     goodsList.get(goodsList.indexOf(goods)).setCount(value);
                     //更新goodsListSelect
+
                     if (goodsListSelect.contains(goods)) {
                         goodsListSelect.get(goodsListSelect.indexOf(goods)).setCount(value);
                         updateMony();
@@ -431,6 +433,7 @@ public class PurchaseFragment extends BaseFragment {
                     updateMony();
                 }
             });
+            updateCheckBoxViewState();
         }
 
     }

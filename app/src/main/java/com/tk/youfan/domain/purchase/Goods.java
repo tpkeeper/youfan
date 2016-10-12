@@ -12,6 +12,30 @@ public class Goods {
     private String lmProdClsId;
     private int count;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Goods goods = (Goods) o;
+
+        if (count != goods.count) return false;
+        if (!id.equals(goods.id)) return false;
+        if (prodClsNum != null ? !prodClsNum.equals(goods.prodClsNum) : goods.prodClsNum != null)
+            return false;
+        return lmProdClsId != null ? lmProdClsId.equals(goods.lmProdClsId) : goods.lmProdClsId == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + (prodClsNum != null ? prodClsNum.hashCode() : 0);
+        result = 31 * result + (lmProdClsId != null ? lmProdClsId.hashCode() : 0);
+        result = 31 * result + count;
+        return result;
+    }
+
     public Goods() {
     }
 
