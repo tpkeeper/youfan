@@ -1,25 +1,23 @@
 package com.tk.youfan.fragment;
 
-import android.annotation.TargetApi;
-import android.os.Build;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cjj.MaterialRefreshLayout;
 import com.cjj.MaterialRefreshListener;
 import com.tk.youfan.R;
+import com.tk.youfan.activity.SearchActivity;
 import com.tk.youfan.activity.MainActivity;
 import com.tk.youfan.adapter.home.HomeRecyclerViewAdapter;
 import com.tk.youfan.base.BaseFragment;
@@ -30,7 +28,6 @@ import com.tk.youfan.utils.Constants;
 import com.tk.youfan.utils.LogUtil;
 import com.tk.youfan.utils.SPUtils;
 import com.tk.youfan.utils.UrlContants;
-import com.tk.youfan.utils.loadingandretry.LoadingAndRetryLayout;
 import com.tk.youfan.utils.loadingandretry.LoadingAndRetryManager;
 import com.tk.youfan.utils.loadingandretry.OnLoadingAndRetryListener;
 import com.tk.youfan.view.DividerItemDecoration;
@@ -41,7 +38,6 @@ import com.zhy.http.okhttp.callback.StringCallback;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -121,6 +117,13 @@ public class HomeFragment extends BaseFragment {
     private void initListener() {
         tv_men_women.setOnClickListener(new MyOnClickListener());
 //        topCebianMain.setOnClickListener(new MyCeBianClickListener());
+        topSearchMain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext,SearchActivity.class);
+                mContext.startActivity(intent);
+            }
+        });
     }
 
 

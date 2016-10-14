@@ -142,11 +142,19 @@ public class PurchaseFragment extends BaseFragment {
                     goodsListSelect.clear();
                     goodsListSelect.addAll(goodsList);
                     //更新列表
+                    if (adapter == null) {
+
+                        return;
+                    }
                     adapter.notifyDataSetChanged();
 //                    更新mony
                     updateMony();
                 } else {
                     goodsListSelect.clear();
+                    if (adapter == null) {
+
+                        return;
+                    }
                     adapter.notifyDataSetChanged();
                     updateMony();
                 }
@@ -185,6 +193,9 @@ public class PurchaseFragment extends BaseFragment {
             btnDelete.setVisibility(View.INVISIBLE);
         }
         //把问题想复杂了，直接notifydatasetchanged就行了
+        if (adapter == null) {
+            return;
+        }
         adapter.notifyDataSetChanged();
 //        initrecyclerView();
         //这样调用会出现有的item不执行onbindViewHolder的方法，这样就导致有些item的view不能得到及时的更新

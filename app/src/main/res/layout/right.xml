@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_side"
+    android:layout_width="200dp"
+    android:layout_height="match_parent"
+    android:layout_gravity="end"
+    android:background="#fff">
+
+    <RelativeLayout
+        android:id="@+id/rel"
+        android:layout_width="200dp"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="#ffffff">
+
+                <TextView
+                    android:id="@+id/top_cebian_brand_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/top_cebian"
+                    android:text="重置" />
+
+                <TextView
+                    android:id="@+id/tv_men_women_brand_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:drawablePadding="3dp"
+                    android:gravity="center_vertical"
+                    android:text="RJKK"
+                    android:textSize="18sp" />
+
+
+                <ImageButton
+                    android:id="@+id/top_share_brand_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/top_search" />
+            </RelativeLayout>
+
+            <com.tk.youfan.view.ReboundScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.1dp"
+                        android:background="#333"></View>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_margin="5dp"
+                            android:layout_weight="1"
+                            android:text="只看有货"
+                            android:textSize="16sp" />
+
+                        <Switch
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:shadowColor="#444" />
+                    </LinearLayout>
+
+                    <ExpandableListView
+                        android:id="@id/expandable_listview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                    </ExpandableListView>
+                </LinearLayout>
+            </com.tk.youfan.view.ReboundScrollView>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+</FrameLayout>

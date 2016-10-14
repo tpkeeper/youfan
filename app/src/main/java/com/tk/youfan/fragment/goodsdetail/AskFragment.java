@@ -14,6 +14,9 @@ import com.tk.youfan.view.MySlideDetails;
  * 作用：xxxx
  */
 public class AskFragment extends BaseFragment {
+    public AskFragment() {
+    }
+
     GoodsDetail goodsDetail;
     public AskFragment(GoodsDetail goodsDetail, MySlideDetails slidedetails) {
         this.goodsDetail = goodsDetail;

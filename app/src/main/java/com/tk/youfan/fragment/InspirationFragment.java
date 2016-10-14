@@ -8,30 +8,22 @@ import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.tk.youfan.R;
-import com.tk.youfan.activity.MainActivity;
 import com.tk.youfan.base.BaseFragment;
+import com.tk.youfan.common.request.BaseCallBack;
+import com.tk.youfan.common.request.TkHttpUtils;
 import com.tk.youfan.domain.EventMessage;
 import com.tk.youfan.domain.inspiration.Title;
 import com.tk.youfan.fragment.inspirationchild.InspirationChildFragment;
-import com.tk.youfan.fragment.searchchild.BrandFragment;
-import com.tk.youfan.fragment.searchchild.CategoryFragment;
-import com.tk.youfan.fragment.searchchild.TrendFragment;
 import com.tk.youfan.utils.LogUtil;
 import com.tk.youfan.utils.UrlContants;
 import com.tk.youfan.utils.loadingandretry.LoadingAndRetryManager;
 import com.tk.youfan.utils.loadingandretry.OnLoadingAndRetryListener;
-import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.Callback;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -39,10 +31,9 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
+import okhttp3.Response;
 
 /**
  * 作者：tpkeeper on 2016/9/28 00:07
@@ -81,6 +72,7 @@ public class InspirationFragment extends BaseFragment {
         mloadingAndRetryManager.showLoading();
         getDataFromNet();
     }
+
     private void setRetryEvent(View retryView) {
         View view = retryView.findViewById(R.id.id_btn_retry);
         view.setOnClickListener(new View.OnClickListener() {
@@ -91,13 +83,32 @@ public class InspirationFragment extends BaseFragment {
             }
         });
     }
+
     @Override
     public void getDataFromNet() {
         super.getDataFromNet();
-        OkHttpUtils.get()
-                .url(UrlContants.LG_1)
-                .build()
-                .execute(new MyStringCallBack());
+        TkHttpUtils.getInstance().get(UrlContants.LG_1, new BaseCallBack<String>() {
+
+            @Override
+            public void onSuccess(Response response, String s) {
+                if (TextUtils.isEmpty(s)) {
+                    LogUtil.e("response is empty in inspirationfragment ");
+                    mloadingAndRetryManager.showEmpty();
+                    return;
+                }
+                processData(s);
+            }
+
+            @Override
+            public void onFailure(Call call, Exception e) {
+                LogUtil.e("tkhttp load err in inspiration fragment!!!");
+                mloadingAndRetryManager.showRetry();
+            }
+        });
+//        OkHttpUtils.get()
+//                .url(UrlContants.LG_1)
+//                .build()
+//                .execute(new MyStringCallBack());
     }
 
     /**
@@ -105,7 +116,7 @@ public class InspirationFragment extends BaseFragment {
      */
     private void initViewPager() {
         inspirationChildFragments = new ArrayList<>();
-        String [] urlArray = {UrlContants.LG_1,UrlContants.LG_2,UrlContants.LG_3,UrlContants.LG_4,UrlContants.LG_5,UrlContants.LG_6,UrlContants.LG_7,UrlContants.LG_8};
+        String[] urlArray = {UrlContants.LG_1, UrlContants.LG_2, UrlContants.LG_3, UrlContants.LG_4, UrlContants.LG_5, UrlContants.LG_6, UrlContants.LG_7, UrlContants.LG_8};
         for (int i = 0; i < titleList.size(); i++) {
             inspirationChildFragments.add(new InspirationChildFragment(urlArray[i]));
         }
@@ -147,23 +158,23 @@ public class InspirationFragment extends BaseFragment {
     public void onClick() {
     }
 
-    private class MyStringCallBack extends StringCallback {
-        @Override
-        public void onError(Call call, Exception e, int id) {
-            LogUtil.e("okhttp load err in inspiration fragment!!!");
-            mloadingAndRetryManager.showRetry();
-        }
-
-        @Override
-        public void onResponse(String response, int id) {
-            if (TextUtils.isEmpty(response)) {
-                LogUtil.e("response is empty in inspirationfragment ");
-                mloadingAndRetryManager.showEmpty();
-                return;
-            }
-            processData(response);
-        }
-    }
+//    private class MyStringCallBack extends StringCallback {
+//        @Override
+//        public void onError(Call call, Exception e, int id) {
+//            LogUtil.e("okhttp load err in inspiration fragment!!!");
+//            mloadingAndRetryManager.showRetry();
+//        }
+//
+//        @Override
+//        public void onResponse(String response, int id) {
+//            if (TextUtils.isEmpty(response)) {
+//                LogUtil.e("response is empty in inspirationfragment ");
+//                mloadingAndRetryManager.showEmpty();
+//                return;
+//            }
+//            processData(response);
+//        }
+//    }
 
     private void processData(String response) {
         JSONObject jsonObject = JSON.parseObject(response);

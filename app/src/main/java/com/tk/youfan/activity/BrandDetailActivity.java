@@ -1,5 +1,6 @@
 package com.tk.youfan.activity;
 
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -9,11 +10,14 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -78,14 +82,17 @@ public class BrandDetailActivity extends FragmentActivity implements ObservableS
     TextView tvSelect;
     @Bind(R.id.drawerlayout)
     DrawerLayout drawerLayout;
-    @Bind(R.id.recyclerview_drawer)
-    RecyclerView recyclerview_drawer;
+//    @Bind(R.id.recyclerview_drawer)
+//    RecyclerView recyclerview_drawer;
     @Bind(R.id.drawer_side)
     FrameLayout drawer_side;
+    @Bind(R.id.expandable_listview)
+    ExpandableListView expandable_listview;
     private String url;
     private BrandStory brandStory;
     private List<BaseFragment> baseFragmentList;
     private MyfragmentViewPagerAdapter adapter;
+    private String[] childs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +108,106 @@ public class BrandDetailActivity extends FragmentActivity implements ObservableS
         String brand_code = getIntent().getStringExtra("brand_code");
         url = UrlContants.BRAND_STORY_PRE + brand_code + UrlContants.BRAND_STORY_TAIL;
         getDataFromNet();
+        childs = new String[]{"男生","女生"};
+        initExpandableListView();
+    }
+
+    private void initExpandableListView() {
+        expandable_listview.setAdapter(new ExpandableListAdapter() {
+            @Override
+            public void registerDataSetObserver(DataSetObserver observer) {
+
+            }
+
+            @Override
+            public void unregisterDataSetObserver(DataSetObserver observer) {
+
+            }
+
+            @Override
+            public int getGroupCount() {
+                return 1;
+            }
+
+            @Override
+            public int getChildrenCount(int groupPosition) {
+                return 2;
+            }
+
+            @Override
+            public Object getGroup(int groupPosition) {
+                return childs;
+            }
+
+            @Override
+            public Object getChild(int groupPosition, int childPosition) {
+                return childs[childPosition];
+            }
+
+            @Override
+            public long getGroupId(int groupPosition) {
+                return groupPosition;
+            }
+
+            @Override
+            public long getChildId(int groupPosition, int childPosition) {
+                return childPosition;
+            }
+
+            @Override
+            public boolean hasStableIds() {
+                return false;
+            }
+
+            @Override
+            public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+                View view = LayoutInflater.from(BrandDetailActivity.this).inflate(R.layout.group_right,parent,false);
+                return view;
+            }
+
+            @Override
+            public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+                View view = LayoutInflater.from(BrandDetailActivity.this).inflate(R.layout.item_child_right,parent,false);
+                TextView tv_item = (TextView) view.findViewById(R.id.tv_item);
+                tv_item.setText(childs[childPosition]);
+                return view;
+            }
+
+            @Override
+            public boolean isChildSelectable(int groupPosition, int childPosition) {
+                return false;
+            }
+
+            @Override
+            public boolean areAllItemsEnabled() {
+                return false;
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return false;
+            }
+
+            @Override
+            public void onGroupExpanded(int groupPosition) {
+
+            }
+
+            @Override
+            public void onGroupCollapsed(int groupPosition) {
+
+            }
+
+            @Override
+            public long getCombinedChildId(long groupId, long childId) {
+                return 0;
+            }
+
+            @Override
+            public long getCombinedGroupId(long groupId) {
+                return 0;
+            }
+        });
     }
 
     private void getDataFromNet() {

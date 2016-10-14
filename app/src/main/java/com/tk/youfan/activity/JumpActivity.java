@@ -8,9 +8,14 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tk.youfan.R;
 import com.tk.youfan.utils.LogUtil;
+import com.umeng.socialize.ShareAction;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.utils.Log;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -76,7 +81,33 @@ public class JumpActivity extends Activity {
             case R.id.imgb_back_jump:
                 break;
             case R.id.imgb_share_jump:
+                new ShareAction(JumpActivity.this).setPlatform(SHARE_MEDIA.QQ)
+                        .withText("hello")
+                        .setCallback(umShareListener)
+                        .share();
                 break;
         }
     }
+    private UMShareListener umShareListener = new UMShareListener() {
+        @Override
+        public void onResult(SHARE_MEDIA platform) {
+            Log.d("plat","platform"+platform);
+
+            Toast.makeText(JumpActivity.this, platform + " 分享成功啦", Toast.LENGTH_SHORT).show();
+
+        }
+
+        @Override
+        public void onError(SHARE_MEDIA platform, Throwable t) {
+            Toast.makeText(JumpActivity.this,platform + " 分享失败啦", Toast.LENGTH_SHORT).show();
+            if(t!=null){
+                Log.d("throw","throw:"+t.getMessage());
+            }
+        }
+
+        @Override
+        public void onCancel(SHARE_MEDIA platform) {
+            Toast.makeText(JumpActivity.this,platform + " 分享取消了", Toast.LENGTH_SHORT).show();
+        }
+    };
 }

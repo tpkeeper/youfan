@@ -20,6 +20,8 @@ import com.tk.youfan.activity.MainActivity;
 import com.tk.youfan.adapter.inspiration.InspirationChildViewAdapter;
 import com.tk.youfan.adapter.search.BrandRecyclerViewAdapter;
 import com.tk.youfan.base.BaseFragment;
+import com.tk.youfan.common.request.BaseCallBack;
+import com.tk.youfan.common.request.TkHttpUtils;
 import com.tk.youfan.domain.EventMessage;
 import com.tk.youfan.domain.inspiration.ItemChild;
 import com.tk.youfan.domain.search.Brand;
@@ -40,6 +42,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
+import okhttp3.Response;
 
 /**
  * 作者：tpkeeper on 2016/10/3 11:12
@@ -118,11 +121,26 @@ public class InspirationChildFragment extends BaseFragment {
             return;
         }
 
-        OkHttpUtils.get()
-                .url(url)
-                .id(100)
-                .build()
-                .execute(new MyStringCallBack());
+        TkHttpUtils.getInstance().get(url, new BaseCallBack<String>() {
+
+
+            @Override
+            public void onSuccess(Response response, String s) {
+                processData(s);
+            }
+
+            @Override
+            public void onFailure(Call call, Exception e) {
+                LogUtil.e("okhttputils load data err ！");
+                mloadingAndRetryManager.showRetry();
+            }
+        });
+
+//        OkHttpUtils.get()
+//                .url(url)
+//                .id(100)
+//                .build()
+//                .execute(new MyStringCallBack());
     }
 
     @Override
@@ -141,18 +159,18 @@ public class InspirationChildFragment extends BaseFragment {
         }
     }
 
-    private class MyStringCallBack extends StringCallback {
-        @Override
-        public void onError(Call call, Exception e, int id) {
-            LogUtil.e("okhttputils load data err ！");
-            mloadingAndRetryManager.showRetry();
-        }
-
-        @Override
-        public void onResponse(String response, int id) {
-            processData(response);
-        }
-    }
+//    private class MyStringCallBack extends StringCallback {
+//        @Override
+//        public void onError(Call call, Exception e, int id) {
+//            LogUtil.e("okhttputils load data err ！");
+//            mloadingAndRetryManager.showRetry();
+//        }
+//
+//        @Override
+//        public void onResponse(String response, int id) {
+//            processData(response);
+//        }
+//    }
 
     private void processData(String response) {
         if (TextUtils.isEmpty(response)) {

@@ -3,6 +3,7 @@
     android:id="@+id/drawerlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -181,18 +182,5 @@
         </com.tk.youfan.view.ObservableScrollView>
     </LinearLayout>
 
-    <FrameLayout
-        android:id="@+id/drawer_side"
-        android:layout_width="200dp"
-        android:layout_gravity="end"
-        android:background="#fff"
-        android:layout_height="match_parent">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerview_drawer"
-            android:layout_width="200dp"
-            android:layout_height="match_parent">
-
-        </android.support.v7.widget.RecyclerView>
-    </FrameLayout>
+    <include layout="@layout/right" />
 </android.support.v4.widget.DrawerLayout>

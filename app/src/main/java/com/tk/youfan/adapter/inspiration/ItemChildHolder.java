@@ -12,6 +12,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tk.youfan.R;
 import com.tk.youfan.activity.InspiraJumpActivity;
 import com.tk.youfan.base.BaseHolder;
+import com.tk.youfan.common.imageloader.ImageLoader;
+import com.tk.youfan.common.imageloader.ImageLoaderUtil;
 import com.tk.youfan.domain.home.Module;
 import com.tk.youfan.domain.inspiration.ItemChild;
 
@@ -38,12 +40,21 @@ public class ItemChildHolder extends BaseHolder {
     }
 
     public void setInspirationChildData(final ItemChild itemChild){
-        Glide.with(mContext)
-                .load(itemChild.getImg())
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .placeholder(R.drawable.default100)
-                .error(R.drawable.default100)
-                .into(img_item_inspiration_child);
+        ImageLoader imageLoader = new ImageLoader.Builder()
+                .with(mContext)
+                .setUrl(itemChild.getImg())
+                .setImageView(img_item_inspiration_child)
+                .build();
+
+        ImageLoaderUtil.getInstance().loadImage(imageLoader);
+//        Glide.with(mContext)
+//                .load(itemChild.getImg())
+//                .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                .placeholder(R.drawable.default100)
+//                .error(R.drawable.default100)
+//                .thumbnail(0.2f)//缩略图
+//                .animate(R.anim.push_left_in)
+//                .into(img_item_inspiration_child);
         tv_title.setText(itemChild.getTitle());
         relt_item_inspiration.setOnClickListener(new View.OnClickListener() {
             @Override
