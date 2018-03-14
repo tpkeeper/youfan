@@ -1,17 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.tk.youfan.MainActivity">
+    android:orientation="vertical">
 
-    <TextView
-        android:text="Hello World!"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-</RelativeLayout>
+    <FrameLayout
+        android:id="@+id/frm_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"></FrameLayout>
+
+    <RadioGroup
+        android:id="@+id/rdg_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rdo_bottom_home"
+            style="@style/bottom_main"
+            android:drawableTop="@drawable/tb_home_selector"
+            android:text="首页" />
+
+        <RadioButton
+            android:id="@+id/rdo_bottom_search"
+            style="@style/bottom_main"
+            android:drawableTop="@drawable/tb_search_selector"
+            android:text="分类" />
+
+        <RadioButton
+            android:id="@+id/rdo_bottom_inspiration"
+            style="@style/bottom_main"
+            android:drawableTop="@drawable/tb_inspiration_selector"
+            android:text="灵感" />
+
+        <RadioButton
+            android:id="@+id/rdo_bottom_purchase"
+            style="@style/bottom_main"
+            android:drawableTop="@drawable/tb_purchase_selector"
+            android:text="购物袋" />
+
+        <RadioButton
+            android:id="@+id/rdo_bottom_me"
+            style="@style/bottom_main"
+            android:drawableTop="@drawable/tb_me_selector"
+            android:text="我的" />
+    </RadioGroup>
+</LinearLayout>

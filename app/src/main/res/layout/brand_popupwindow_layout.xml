@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:id="@+id/brand_popupwindow"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+
+    <com.bigkoo.quicksidebar.QuickSideBarView
+        android:id="@+id/quickSideBarView"
+        android:layout_width="20dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="45dp"
+        app:sidebarItemHeight="@dimen/height_quicksidebaritem"
+        app:sidebarTextColor="@android:color/black"
+        app:sidebarTextColorChoose="@color/colorPrimary"
+        app:sidebarTextSize="@dimen/textSize_quicksidebar"
+        app:sidebarTextSizeChoose="@dimen/textSize_quicksidebar_choose" />
+    <ImageView
+        android:id="@+id/img_dismiss"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/btn_jiantou_b"
+        android:background="@android:color/transparent"
+        android:layout_width="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_height="50dp" />
+</RelativeLayout>

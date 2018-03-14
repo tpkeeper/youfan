@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_bottom"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="8dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp">
+
+    <TextView
+        android:id="@+id/tv_popwindow_first"
+        android:layout_width="match_parent"
+        android:layout_height="39dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/round_half_top"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="关联申请"
+        android:textColor="@color/grey"
+        android:textSize="13sp" />
+
+    <View
+        android:id="@+id/view_line1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="39dp"
+        android:background="@color/grey" />
+
+    <ListView
+        android:id="@+id/lv_popwindow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/view_line1"
+        android:divider="@null"
+        android:listSelector="@color/transparent">
+
+    </ListView>
+
+    <View
+        android:id="@+id/view_line"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_below="@+id/lv_popwindow"
+        android:background="@color/transparent" />
+
+    <TextView
+        android:id="@+id/tv_popwindow_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="39dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/item_selector"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="关联申请"
+        android:textColor="@color/skyblue"
+        android:textSize="15sp" />
+
+</RelativeLayout>

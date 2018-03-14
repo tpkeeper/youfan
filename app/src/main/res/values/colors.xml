@@ -3,4 +3,15 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="tab_text_select">#747474</color>
+    <color name="tab_text_normal">#E1E1E1</color>
+
+    <!--popwindow-->
+    <color name="grey">#969696</color>
+    <color name="transparent">#00000000</color>
+    <color name="white">#ffffff</color>
+    <color name="skyblue">#00aff0</color>
+    <!--二维码扫描相关-->
+    <color name="scan_bg">#7f000000</color>
 </resources>

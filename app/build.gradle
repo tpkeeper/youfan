@@ -11,10 +11,47 @@ android {
         versionCode 1
         versionName "1.0"
     }
+//    buildTypes {
+//        release {
+//            minifyEnabled false
+//            signingConfig signingConfigs.debug
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//        }
+//        debug {
+//            minifyEnabled false
+//            signingConfig signingConfigs.debug
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//        }
+//    }
     buildTypes {
         release {
+            // 是否进行混淆
             minifyEnabled false
+            // 混淆文件的位置
+            signingConfig signingConfigs.debug
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            minifyEnabled false
+            signingConfig signingConfigs.debug
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+//    signingConfigs {
+//        debug {
+//            storeFile file('youfan.jks')
+//            storePassword "123456"
+//            keyAlias "youfan"
+//            keyPassword "123456"
+//        }
+//    }
+    signingConfigs {
+        debug {
+            storeFile file('debug.keystore')
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
         }
     }
 }
@@ -23,4 +60,19 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.4.0'
+    compile project(':SlidingMenu_library')
+    compile 'com.android.support:recyclerview-v7:23.4.0'
+    compile 'com.squareup.okhttp3:okhttp:3.3.1'
+    compile project(':okhttputils')
+    //    轮播图
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.android.support:support-v4:23.4.0'
+    compile 'cn.bingoogolapple:bga-banner:2.0.9'
+    compile files('libs/glide-3.6.1.jar')
+    compile project(':MaterialRefreshLayout_library')
+    compile project(':SmartTabLayout_library')
+    compile project(':quicksidebar')
+    compile project(':LoadingDrawablelibrary')
+    compile project(':SlideDetailsLayoutlibrary')
+    compile project(':PhotoView_library')
 }

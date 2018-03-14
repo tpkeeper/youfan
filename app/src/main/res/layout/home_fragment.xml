@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/rla_title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#ffffff">
+
+        <ImageButton
+            android:id="@+id/top_cebian_main"
+            android:layout_width="wrap_content"
+            android:src="@drawable/top_cebian"
+            android:layout_marginLeft="10dp"
+            android:background="@android:color/transparent"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/tv_men_women"
+            android:layout_width="wrap_content"
+            android:text="男生"
+            android:textSize="18sp"
+            android:drawableRight="@drawable/btn_jiantou_selector"
+            android:drawablePadding="3dp"
+            android:layout_centerInParent="true"
+            android:gravity="center_vertical"
+            android:layout_height="match_parent" />
+        <ImageButton
+            android:id="@+id/top_search_main"
+            android:layout_width="wrap_content"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/top_search"
+            android:layout_marginRight="10dp"
+            android:background="@android:color/transparent"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+    <com.cjj.MaterialRefreshLayout
+        android:id="@+id/refreshlayout"
+        android:layout_width="match_parent"
+        app:isLoadMore="false"
+        app:overlay="false"
+        app:wave_show="false"
+        app:wave_color="#99999999"
+        app:progress_show_circle_backgroud ="false"
+        android:layout_height="match_parent">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview_home"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </android.support.v7.widget.RecyclerView>
+
+    </com.cjj.MaterialRefreshLayout>
+
+</LinearLayout>
