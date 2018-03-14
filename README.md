@@ -1,3 +1,11 @@
-# Youfan
-* 天作棋盘星为子，何人能下？
-* 地作琵琶路为弦，谁人能弹？
+# Shopping App for android  practice
+
+### technical points:
+
+* okhttp
+* glide
+* recyclerview
+* materialrefreshlayout
+* smart_indicatior+viewpager
+* speech-recognition 
+* QR code
